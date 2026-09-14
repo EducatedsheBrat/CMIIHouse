@@ -1,0 +1,49 @@
+{
+  "name": "leaderquest",
+  "private": true,
+  "version": "0.1.0",
+  "description": "LeaderQuest — the CMII House System points tracker for Georgia State University",
+  "scripts": {
+    "dev": "next dev",
+    "dev:emu": "node scripts/with-env.mjs .env.emulator next dev",
+    "build": "next build --webpack",
+    "build:emu": "node scripts/with-env.mjs .env.emulator next build --webpack",
+    "start": "next start",
+    "start:emu": "node scripts/with-env.mjs .env.emulator next start",
+    "lint": "eslint",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.scripts.json && tsc -p tsconfig.node.json",
+    "seed": "ts-node src/scripts/seed.ts",
+    "seed:emu": "ts-node src/scripts/seed.ts --emulator",
+    "emulators": "firebase emulators:start --only auth,firestore --project demo-leaderquest",
+    "icons": "node scripts/generate-icons.mjs",
+    "panthers": "node scripts/generate-panthers.mjs",
+    "test": "vitest run tests/unit",
+    "test:rules": "firebase emulators:exec --only firestore --project demo-leaderquest \"vitest run tests/rules\"",
+    "deploy:rules": "firebase deploy --only firestore:rules,firestore:indexes"
+  },
+  "dependencies": {
+    "firebase": "^12.19.0",
+    "next": "^16.3.5",
+    "next-pwa": "^5.6.0",
+    "papaparse": "^5.7.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^5.0.2",
+    "@types/node": "^26.5.1",
+    "@types/papaparse": "^5.3.16",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.2.0",
+    "autoprefixer": "^10.6.0",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.3.5",
+    "firebase-admin": "^14.4.0",
+    "postcss": "^8.5.28",
+    "sharp": "^0.35.4",
+    "tailwindcss": "^3.4.19",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.9.3",
+    "vitest": "^5.0.0"
+  }
+}

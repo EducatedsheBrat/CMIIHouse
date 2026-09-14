@@ -1,0 +1,178 @@
+rules_version = '2';
+
+// LeaderQuest — CMII House System
+//
+// Identity model: user documents are keyed by the member's lowercase GSU email
+// (users/jane.doe@gsu.edu). Admins provision people *before* they ever sign in,
+// so the Firebase uid isn't known yet; the verified email on the auth token is
+// what links a signed-in account to its roster entry.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- Identity helpers ----------
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function emailKey() {
+      return request.auth.token.email.lower();
+    }
+
+    // Server-side domain restriction: verified @gsu.edu (or subdomain, e.g. student.gsu.edu).
+    function isVerifiedGsu() {
+      return signedIn()
+        && 'email' in request.auth.token
+        && request.auth.token.email_verified == true
+        && emailKey().matches('^[^@]+@([a-z0-9-]+[.])*gsu[.]edu$');
+    }
+
+    function mePath() {
+      return /databases/$(database)/documents/users/$(emailKey());
+    }
+
+    function isMember() {
+      return isVerifiedGsu() && exists(mePath());
+    }
+
+    function isAdmin() {
+      return isMember() && get(mePath()).data.role == 'admin';
+    }
+
+    function isFaculty() {
+      return isMember() && get(mePath()).data.role in ['faculty', 'admin'];
+    }
+
+    function isSelf(userId) {
+      return isVerifiedGsu() && emailKey() == userId;
+    }
+
+    // ---------- Point award validation ----------
+
+    function categoryRanges() {
+      return {
+        'academic': [50, 100],
+        'participation': [5, 10],
+        'service': [20, 50],
+        'challenge': [100, 500],
+        'character': [25, 50]
+      };
+    }
+
+    function validAmount(category, amount) {
+      return category is string
+        && category in categoryRanges()
+        && amount is int
+        && amount >= categoryRanges()[category][0]
+        && amount <= categoryRanges()[category][1];
+    }
+
+    // A faculty award is only valid when it arrives in the same transaction that
+    // bumps the student's and the house's denormalized totals (and vice versa).
+    function isValidAward(pointId) {
+      let d = request.resource.data;
+      let studentPath = /databases/$(database)/documents/users/$(d.studentId);
+      let housePath = /databases/$(database)/documents/houses/$(d.houseId);
+      return d.keys().hasAll(['studentId', 'houseId', 'seasonId', 'category', 'amount', 'note', 'awardedBy', 'awardedAt'])
+        && d.keys().hasOnly(['studentId', 'studentName', 'houseId', 'seasonId', 'category', 'amount', 'note', 'awardedBy', 'awardedByName', 'awardedAt'])
+        && d.studentId is string
+        && d.houseId is string
+        && d.seasonId is string
+        && d.awardedBy == emailKey()
+        && d.awardedAt == request.time
+        && d.note is string && d.note.size() <= 280
+        && validAmount(d.category, d.amount)
+        && get(/databases/$(database)/documents/seasons/$(d.seasonId)).data.status == 'active'
+        && get(studentPath).data.role == 'student'
+        && get(studentPath).data.houseId == d.houseId
+        && getAfter(studentPath).data.lastPointId == pointId
+        && getAfter(housePath).data.lastPointId == pointId
+        && getAfter(housePath).data.seasonId == d.seasonId;
+    }
+
+    // Faculty may touch only totalPoints + lastPointId, and only by exactly the
+    // amount of a point document being created in the same write batch.
+    function isAwardTotalBump(ownerField, ownerId) {
+      let after = request.resource.data;
+      let pointPath = /databases/$(database)/documents/points/$(after.lastPointId);
+      return after.diff(resource.data).affectedKeys().hasOnly(['totalPoints', 'lastPointId'])
+        && after.lastPointId is string
+        && !exists(pointPath)
+        && existsAfter(pointPath)
+        && getAfter(pointPath).data[ownerField] == ownerId
+        && after.totalPoints == resource.data.get('totalPoints', 0) + getAfter(pointPath).data.amount;
+    }
+
+    // ---------- Sorting ceremony ----------
+
+    // Faculty may place an unsorted student in a house (sortedAt = now), or undo a sort
+    // made in the last hour for a student who hasn't earned any points yet.
+    // Admins reassign houses directly (they can write any user field).
+    function isCeremonySort() {
+      let before = resource.data;
+      let after = request.resource.data;
+      return before.role == 'student'
+        && after.diff(before).affectedKeys().hasOnly(['houseId', 'sorted', 'sortedAt'])
+        && (
+          (before.get('houseId', null) == null
+            && after.houseId in ['lumina', 'doron', 'ase', 'kaizen']
+            && after.sorted == true
+            && after.sortedAt == request.time)
+          ||
+          (before.get('sorted', false) == true
+            && before.get('totalPoints', 0) == 0
+            && before.sortedAt is timestamp
+            && before.sortedAt > request.time - duration.value(1, 'h')
+            && after.houseId == null
+            && after.sorted == false
+            && after.sortedAt == null)
+        );
+    }
+
+    // ---------- Collections ----------
+
+    match /seasons/{seasonId} {
+      // Public: the hallway kiosk shows the season name without signing in.
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /houses/{houseId} {
+      allow read: if true; // public for kiosk display
+      allow write: if isAdmin();
+      allow update: if isFaculty() && isAwardTotalBump('houseId', houseId);
+    }
+
+    match /users/{userId} {
+      // Anyone may check whether their own roster entry exists; members see the roster.
+      allow read: if isSelf(userId) || isMember();
+
+      allow create: if isAdmin()
+        && request.resource.data.email == userId
+        && request.resource.data.role in ['student', 'faculty', 'admin'];
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+
+      // Members may record their auth uid / photo / last login — nothing else.
+      allow update: if isSelf(userId)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['uid', 'photoURL', 'lastLoginAt'])
+        && request.resource.data.uid == request.auth.uid;
+
+      // Faculty bump a student's total as part of an award transaction.
+      allow update: if isFaculty()
+        && resource.data.role == 'student'
+        && isAwardTotalBump('studentId', userId);
+
+      // Faculty run the sorting ceremony.
+      allow update: if isFaculty() && isCeremonySort();
+    }
+
+    match /points/{pointId} {
+      allow read: if isMember();
+      allow create: if isFaculty() && isValidAward(pointId);
+      // Admins can create directly (demo seeding, corrections) and revoke awards.
+      allow create: if isAdmin() && validAmount(request.resource.data.category, request.resource.data.amount);
+      allow update, delete: if isAdmin();
+    }
+  }
+}

@@ -1,0 +1,346 @@
+/* Sorting ceremony: wheel spin, panther run, and house reveal. */
+
+/* ---------- Presentation mode (the ceremony page in full screen) ---------- */
+
+.lq-ceremony.is-presenting {
+  overflow-y: auto;
+  padding: 24px 32px;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(16, 42, 92, 0.9), transparent 70%),
+    linear-gradient(180deg, #0a1628, #0d0d12);
+}
+.lq-ceremony.is-presenting .lq-wheel {
+  --wheel-size: min(52vh, 560px);
+}
+
+/* ---------- The wheel ---------- */
+
+.lq-stage {
+  container-type: inline-size;
+}
+
+.lq-wheel {
+  --wheel-size: min(78vw, 440px, 86cqi, max(280px, 42vh));
+  position: relative;
+  width: var(--wheel-size);
+  height: var(--wheel-size);
+  font-size: calc(var(--wheel-size) / 26);
+}
+
+/* Ornamental outer frame: gold ring, gap, hairline, and notches. */
+.lq-wheel__frame {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 4px solid #d4a843;
+  box-shadow:
+    0 0 0 5px #0d0d12,
+    0 0 0 6px rgba(212, 168, 67, 0.45),
+    0 0 40px -4px rgba(212, 168, 67, 0.45),
+    inset 0 0 24px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+  z-index: 3;
+}
+.lq-wheel__notch {
+  position: absolute;
+  left: 50%;
+  top: -2px;
+  width: 4px;
+  height: calc(var(--wheel-size) / 2 + 2px);
+  margin-left: -2px;
+  transform-origin: 50% 100%;
+  pointer-events: none;
+}
+.lq-wheel__notch::before {
+  content: '';
+  display: block;
+  width: 4px;
+  height: 9px;
+  border-radius: 2px;
+  background: #ebcb7a;
+  opacity: 0.85;
+}
+
+.lq-wheel__rotor {
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: conic-gradient(
+    from 0deg,
+    #d4a843 0deg 90deg,
+    #5b8dbe 90deg 180deg,
+    #9b6ba3 180deg 270deg,
+    #6aab6e 270deg 360deg
+  );
+  will-change: transform;
+}
+.lq-wheel__rotor::after {
+  /* depth: darker toward the hub and rim */
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(10, 22, 40, 0.75) 0%, rgba(10, 22, 40, 0.1) 32%, transparent 55%, rgba(0, 0, 0, 0.35) 100%),
+    repeating-conic-gradient(from 0deg, rgba(255, 255, 255, 0.04) 0deg 2deg, transparent 2deg 6deg);
+  pointer-events: none;
+}
+
+@keyframes lq-wheel-spin {
+  from { transform: rotate(var(--spin-from, 0deg)); }
+  to { transform: rotate(calc(var(--spin-from, 0deg) + 360deg)); }
+}
+.lq-wheel__rotor.is-spinning {
+  animation: lq-wheel-spin 0.3s linear infinite;
+  filter: blur(0.6px) saturate(1.15);
+}
+
+.lq-wheel__divider {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 3px;
+  height: 50%;
+  margin-left: -1.5px;
+  transform-origin: 50% 100%;
+  background: linear-gradient(180deg, #f7e2a6, #d4a843 60%, rgba(212, 168, 67, 0.2));
+  z-index: 1;
+}
+
+.lq-wheel__label {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  z-index: 2;
+}
+.lq-wheel__label > span {
+  position: absolute;
+  left: 0;
+  top: calc(var(--wheel-size) * -0.36);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2em;
+  color: #fff;
+  font-family: var(--font-cinzel-decorative), Georgia, serif;
+  font-weight: 700;
+  font-size: 1.15em;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+  white-space: nowrap;
+}
+
+/* The winning section pulses after landing. */
+.lq-wheel__highlight {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 50%;
+  background: conic-gradient(from var(--hl-start), rgba(255, 248, 225, 0.55) 0deg 90deg, transparent 90deg 360deg);
+  mix-blend-mode: soft-light;
+  animation: lq-section-pulse 1.1s ease-in-out infinite;
+}
+@keyframes lq-section-pulse {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+.lq-wheel.is-landed .lq-wheel__rotor {
+  box-shadow: 0 0 0 2px var(--win-color);
+}
+.lq-wheel.is-landed .lq-wheel__frame {
+  border-color: var(--win-color);
+  box-shadow:
+    0 0 0 5px #0d0d12,
+    0 0 0 6px var(--win-color),
+    0 0 60px 4px var(--win-glow);
+  transition: border-color 0.6s ease, box-shadow 0.6s ease;
+}
+
+.lq-wheel__hub {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 26%;
+  height: 26%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #16356f, #0a1628 70%);
+  border: 3px solid #d4a843;
+  box-shadow: 0 0 0 4px #0d0d12, 0 0 0 5px rgba(212, 168, 67, 0.5), 0 0 24px rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 4;
+}
+
+.lq-wheel__pointer {
+  position: absolute;
+  left: 50%;
+  top: -22px;
+  transform: translateX(-50%);
+  z-index: 5;
+  filter: drop-shadow(0 0 8px rgba(212, 168, 67, 0.6));
+}
+.lq-wheel.is-spinning .lq-wheel__pointer {
+  animation: lq-pointer-tick 0.075s linear infinite;
+}
+@keyframes lq-pointer-tick {
+  0%, 100% { transform: translateX(-50%) rotate(0deg); }
+  50% { transform: translateX(-50%) rotate(-7deg); }
+}
+
+/* ---------- Panther track ---------- */
+
+.lq-track {
+  --track-w: min(92vw, 460px, 100cqi, max(280px, 44vh));
+  position: relative;
+  width: var(--track-w);
+  height: calc(var(--track-w) * 0.38);
+  overflow: hidden;
+}
+.lq-track__ground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 6%;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, rgba(212, 168, 67, 0.65) 0 18px, transparent 18px 34px);
+  mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+  animation: lq-ground-scroll 0.34s linear infinite;
+  animation-play-state: paused;
+}
+@keyframes lq-ground-scroll {
+  from { background-position-x: 0; }
+  to { background-position-x: -34px; }
+}
+.lq-track__dust {
+  position: absolute;
+  bottom: 7%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(212, 168, 67, 0.35);
+  opacity: 0;
+}
+.lq-track.is-running .lq-track__dust {
+  animation: lq-dust 0.46s ease-out infinite;
+}
+@keyframes lq-dust {
+  0% { opacity: 0.7; transform: translate(0, 0) scale(0.6); }
+  100% { opacity: 0; transform: translate(-60px, -10px) scale(1.6); }
+}
+
+.lq-track.is-running .lq-track__ground {
+  animation-play-state: running;
+}
+/* Standing still (before the first spin, after a stop): freeze the run cycle mid-stride. */
+.lq-track.is-paused .lq-panther--running,
+.lq-track.is-paused .lq-panther--running * {
+  animation-play-state: paused !important;
+}
+
+/* The runner drifts forward and back across the track while it runs, so it reads as covering ground. */
+.lq-track__runner {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 58%;
+  transform: translateX(-50%);
+  transition: opacity 0.8s ease, filter 0.8s ease;
+}
+.lq-track.is-running .lq-track__runner-drift {
+  animation: lq-drift 2.8s ease-in-out infinite;
+}
+@keyframes lq-drift {
+  0%, 100% { transform: translateX(-14%); }
+  50% { transform: translateX(14%); }
+}
+
+/* Reveal: the black runner warms into the house color, then crossfades to the house pose. */
+.lq-track.is-revealed .lq-track__runner {
+  opacity: 0;
+  filter: brightness(1.8) saturate(2) drop-shadow(0 0 14px var(--win-color));
+}
+.lq-track__house {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 54%;
+  opacity: 0;
+  transform: translateX(-50%) translateY(10%) scale(0.85);
+  transition: opacity 0.8s ease 0.25s, transform 0.9s cubic-bezier(0.2, 0.9, 0.3, 1.25) 0.25s;
+}
+.lq-track.is-revealed .lq-track__house {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+/* ---------- House reveal ---------- */
+
+.lq-reveal {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: auto;
+  cursor: pointer;
+}
+.lq-reveal__backdrop {
+  position: absolute;
+  inset: -10%;
+  background: radial-gradient(circle, var(--win-glow) 0%, rgba(13, 13, 18, 0.72) 45%, rgba(13, 13, 18, 0) 72%);
+  animation: lq-reveal-backdrop 0.9s ease-out both;
+}
+@keyframes lq-reveal-backdrop {
+  from { opacity: 0; transform: scale(0.6); }
+  to { opacity: 1; transform: scale(1); }
+}
+.lq-reveal__name {
+  position: relative;
+  font-family: var(--font-cinzel-decorative), Georgia, serif;
+  font-weight: 900;
+  line-height: 1;
+  font-size: clamp(44px, 11vw, 96px);
+  color: var(--win-light);
+  text-shadow: 0 0 28px var(--win-color), 0 0 60px var(--win-glow);
+  animation: lq-reveal-name 1s cubic-bezier(0.2, 0.9, 0.3, 1.2) 0.15s both;
+}
+@keyframes lq-reveal-name {
+  0% { opacity: 0; transform: scale(0.4); letter-spacing: 0.4em; filter: blur(8px); }
+  60% { opacity: 1; filter: blur(0); }
+  100% { opacity: 1; transform: scale(1); letter-spacing: 0.02em; }
+}
+.lq-reveal__sub {
+  position: relative;
+  animation: fade-up 0.6s ease-out 0.7s both;
+}
+.lq-particle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--p-size);
+  height: var(--p-size);
+  background: var(--p-color);
+  transform: rotate(45deg);
+  opacity: 0;
+  animation: lq-particle var(--p-dur) ease-out var(--p-delay) infinite;
+}
+@keyframes lq-particle {
+  0% { opacity: 0; transform: translate(-50%, -50%) rotate(45deg) scale(0.3); }
+  15% { opacity: 1; }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--p-x)), calc(-50% + var(--p-y))) rotate(225deg) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lq-wheel__rotor.is-spinning { filter: none; }
+  .lq-track.is-running .lq-track__runner-drift { animation: none; }
+}
