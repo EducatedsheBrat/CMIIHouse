@@ -39,12 +39,11 @@ To try the sorting ceremony, sign in as the admin or faculty account and open `/
    firebase use --add            # pick your project
    npm run deploy:rules
    ```
-4. Seed data and make yourself an admin. Download a service-account key (Project settings → Service accounts) and:
-   ```powershell
-   $env:GOOGLE_APPLICATION_CREDENTIALS = "C:\path\to\service-account.json"
-   npx ts-node src/scripts/seed.ts --admin-email=you@gsu.edu --admin-name="Your Name"
+4. Seed the season and houses and make yourself an admin. Download a service-account key (Project settings → Service accounts → Generate new private key), save it as `service-account.json` in the project root (it's git-ignored), then run:
+   ```bash
+   npx ts-node src/scripts/seed.ts --minimal --admin-email=you@gsu.edu --admin-name="Your Name"
    ```
-   Add `--no-auth` to skip creating the demo email/password accounts.
+   **Use `--minimal` on real projects.** Without it the script also creates the demo roster and demo email/password accounts, including an admin, whose shared password is printed above. To explore with sample students on a real project, use **Admin → Seasons → Load demo data** instead, which adds records but no sign-in accounts. The admin must be a `@gsu.edu` address (see the security rules).
 5. `npm run dev`, then sign in with Google as the admin email.
 
 ## Deploying to Vercel

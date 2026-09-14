@@ -4,9 +4,14 @@
  *   npx ts-node src/scripts/seed.ts                      # real project (needs a service account)
  *   npx ts-node src/scripts/seed.ts --emulator           # local emulators (npm run emulators)
  *   npx ts-node src/scripts/seed.ts --admin-email=you@gsu.edu --admin-name="Your Name"
+ *   npx ts-node src/scripts/seed.ts --minimal --admin-email=you@gsu.edu   # production: season, houses, your admin only
  *
- * Real projects: set GOOGLE_APPLICATION_CREDENTIALS to a service-account JSON key
- * (Firebase console → Project settings → Service accounts → Generate new private key).
+ * --minimal skips the demo roster, awards, and demo email/password accounts. Use it for real
+ * projects: the demo accounts (including an admin) share a password published in the README.
+ *
+ * Real projects need a service-account key (Firebase console → Project settings → Service accounts →
+ * Generate new private key). Save it as service-account.json in the project root (git-ignored),
+ * or point GOOGLE_APPLICATION_CREDENTIALS at it.
  * The project id is read from NEXT_PUBLIC_FIREBASE_PROJECT_ID in .env.local, or --project=<id>.
  *
  * Safe to re-run: documents use fixed ids, existing people keep their data, and
@@ -15,7 +20,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { applicationDefault, initializeApp } from 'firebase-admin/app';
+import { applicationDefault, cert, initializeApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { getFirestore, Timestamp, FieldValue } from 'firebase-admin/firestore';
 import { HOUSES, userKey, type HouseId } from '../lib/constants';
@@ -41,7 +46,13 @@ function arg(name: string): string | undefined {
   return hit ? hit.slice(prefix.length) : undefined;
 }
 const useEmulator = process.argv.includes('--emulator');
-const skipAuth = process.argv.includes('--no-auth');
+const minimal = process.argv.includes('--minimal');
+const skipAuth = minimal || process.argv.includes('--no-auth');
+
+if (minimal && !arg('admin-email')) {
+  console.error('✖ --minimal needs --admin-email=you@gsu.edu so someone can sign in and run the admin panel.');
+  process.exit(1);
+}
 
 function readEnvFile(file: string): Record<string, string> {
   const full = path.resolve(process.cwd(), file);
@@ -69,7 +80,13 @@ if (useEmulator) {
   process.env.FIREBASE_AUTH_EMULATOR_HOST ??= '127.0.0.1:9099';
 }
 
-const app = initializeApp(useEmulator ? { projectId } : { projectId, credential: applicationDefault() });
+function credential() {
+  const local = path.resolve(process.cwd(), 'service-account.json');
+  if (!process.env.GOOGLE_APPLICATION_CREDENTIALS && fs.existsSync(local)) return cert(local);
+  return applicationDefault();
+}
+
+const app = initializeApp(useEmulator ? { projectId } : { projectId, credential: credential() });
 const db = getFirestore(app);
 const auth = getAuth(app);
 
@@ -92,9 +109,9 @@ async function ensureAuthAccount(user: SeedUser): Promise<string | undefined> {
 }
 
 async function main() {
-  console.log(`\n⚜  Seeding LeaderQuest → ${projectId}${useEmulator ? ' (emulator)' : ''}\n`);
+  console.log(`\n⚜  Seeding LeaderQuest → ${projectId}${useEmulator ? ' (emulator)' : ''}${minimal ? ' — minimal' : ''}\n`);
   const now = new Date();
-  const season = seedSeason(now);
+  const season = { ...seedSeason(now), ...(minimal && extraAdmin ? { createdBy: extraAdmin.email } : {}) };
 
   // Season — keep an existing season's status so re-running never reopens a closed season.
   const seasonRef = db.doc(`seasons/${season.id}`);
@@ -114,7 +131,7 @@ async function main() {
   console.log(`  ✓ season ${season.id} (${status})`);
 
   // Houses
-  const advisors = [...SEED_FACULTY, SEED_ADMIN];
+  const advisors = minimal ? [] : [...SEED_FACULTY, SEED_ADMIN];
   for (const h of seedHouses(season.id, advisors)) {
     const { id, icon: _icon, pantherPose: _pose, advisors: houseAdvisors, ...rest } = h;
     const ref = db.doc(`houses/${id}`);
@@ -125,7 +142,8 @@ async function main() {
   console.log('  ✓ houses: Lumina, Doron, Asé, Kaizen');
 
   // People
-  const people: SeedUser[] = [...SEED_STUDENTS, ...SEED_UNSORTED, ...SEED_FACULTY, SEED_ADMIN, ...(extraAdmin ? [extraAdmin] : [])];
+  const demoPeople = minimal ? [] : [...SEED_STUDENTS, ...SEED_UNSORTED, ...SEED_FACULTY, SEED_ADMIN];
+  const people: SeedUser[] = [...demoPeople, ...(extraAdmin ? [extraAdmin] : [])];
   let created = 0;
   for (const person of people) {
     const id = userKey(person.email);
@@ -152,13 +170,15 @@ async function main() {
     created++;
   }
   console.log(
-    `  ✓ people: ${SEED_STUDENTS.length} sorted + ${SEED_UNSORTED.length} unsorted students, ${SEED_FACULTY.length} faculty, ${extraAdmin ? 2 : 1} admin (${created} new)`,
+    minimal
+      ? `  ✓ people: admin ${extraAdmin?.email} (${created} new)`
+      : `  ✓ people: ${SEED_STUDENTS.length} sorted + ${SEED_UNSORTED.length} unsorted students, ${SEED_FACULTY.length} faculty, ${extraAdmin ? 2 : 1} admin (${created} new)`,
   );
 
   // Points
   const byEmail = new Map(people.map((p) => [p.email, p]));
   const batch = db.batch();
-  for (const p of SEED_POINTS) {
+  for (const p of minimal ? [] : SEED_POINTS) {
     const student = byEmail.get(p.studentEmail)!;
     batch.set(db.doc(`points/${season.id}-${p.id}`), {
       studentId: p.studentEmail,
@@ -174,7 +194,7 @@ async function main() {
     });
   }
   await batch.commit();
-  console.log(`  ✓ points: ${SEED_POINTS.length} awards`);
+  if (!minimal) console.log(`  ✓ points: ${SEED_POINTS.length} awards`);
 
   // Totals, recomputed from every award in the season.
   const allPoints = await db.collection('points').where('seasonId', '==', season.id).get();
