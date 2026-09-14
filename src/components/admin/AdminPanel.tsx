@@ -5,7 +5,7 @@ import { useSearchParam } from '../../hooks/useSearchParam';
 import { useActiveSeason } from '../../hooks/useSeason';
 import { useStudents } from '../../hooks/useStudents';
 import { HOUSE_IDS } from '../../lib/constants';
-import { cn } from '../../lib/utils';
+import { cn, seasonLabel } from '../../lib/utils';
 import { NavIcon } from '../layout/NavIcons';
 import { PageHeader } from '../shared/PageHeader';
 import { Panther } from '../shared/Panther';
@@ -30,7 +30,7 @@ export function AdminPanel() {
 
   return (
     <div>
-      <PageHeader eyebrow="Administration" title="The Council Chamber" subtitle={loading ? ' ' : season ? `Active season: ${season.name}` : 'No season is active'} />
+      <PageHeader eyebrow="Administration" title="The Council Chamber" subtitle={loading ? ' ' : season ? `Active season: ${seasonLabel(season)}` : 'No season is active'} />
 
       {/* Quick links */}
       <div className="mb-6 grid gap-3 sm:grid-cols-2">

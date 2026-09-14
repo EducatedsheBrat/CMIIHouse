@@ -10,7 +10,7 @@ import { useFaculty, useStudents } from '../../hooks/useStudents';
 import { HOUSES, isHouseId, type HouseId } from '../../lib/constants';
 import { countMembers } from '../../lib/sorting';
 import type { AppUser } from '../../lib/types';
-import { formatPoints, rgba } from '../../lib/utils';
+import { formatPoints, rgba, seasonLabel } from '../../lib/utils';
 import { NavIcon } from '../layout/NavIcons';
 import { AnimatedNumber } from '../shared/AnimatedNumber';
 import { AssignHouseDialog } from '../shared/AssignHouseDialog';
@@ -54,7 +54,7 @@ export function Roster() {
   return (
     <div>
       <PageHeader
-        eyebrow={season?.name ?? 'Faculty'}
+        eyebrow={season ? seasonLabel(season) : 'Faculty'}
         title="House Rosters"
         actions={
           <Link href="/ceremony" className="btn btn-ghost btn-sm">

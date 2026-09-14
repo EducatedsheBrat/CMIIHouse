@@ -80,7 +80,7 @@ export function LoginScreen() {
       <GoldBorder className="relative w-full max-w-sm px-6 pb-7 pt-8 animate-fade-up">
         <div className="flex flex-col items-center text-center">
           <Crest size={84} className="drop-shadow-[0_0_24px_rgba(212,168,67,0.35)]" />
-          <h1 className="mt-4 font-display text-3xl font-black text-gold-gradient">LeaderQuest</h1>
+          <h1 className="mt-4 font-display text-[28px] font-black leading-tight text-gold-gradient">CMII House Points</h1>
           <p className="mt-1 font-heading text-[11px] uppercase tracking-[0.28em] text-white/55">The CMII House System</p>
         </div>
 
@@ -90,7 +90,7 @@ export function LoginScreen() {
           <div className="parchment p-4 text-center">
             <p className="font-heading text-sm font-bold">Not yet on the house rolls</p>
             <p className="mt-1.5 text-xs leading-relaxed text-parchment-ink/75">
-              <strong className="break-all">{firebaseUser?.email ?? 'This account'}</strong> hasn’t been added to LeaderQuest. Sign in with your GSU account, or ask a CMII admin to add you.
+              <strong className="break-all">{firebaseUser?.email ?? 'This account'}</strong> hasn’t been added to CMII House Points. Sign in with your GSU account, or ask a CMII admin to add you.
             </p>
             <button type="button" onClick={signOut} className="mt-3 font-heading text-xs font-bold uppercase tracking-[0.14em] text-parchment-ink underline-offset-4 hover:underline">
               Use a different account

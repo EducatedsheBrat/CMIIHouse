@@ -5,7 +5,7 @@ import { revokePoint, usePointFeed } from '../../hooks/usePoints';
 import { useSeasons } from '../../hooks/useSeason';
 import { CATEGORIES, CATEGORY_KEYS, HOUSES, isCategoryKey, type CategoryKey, type HouseId } from '../../lib/constants';
 import type { PointAward, Season } from '../../lib/types';
-import { downloadCsv, formatDateTime, formatPoints, toDate } from '../../lib/utils';
+import { downloadCsv, formatDateTime, formatPoints, seasonLabel, toDate } from '../../lib/utils';
 import { ConfirmDialog } from '../shared/ConfirmDialog';
 import { HouseBadge } from '../shared/HouseBadge';
 import { HouseChips } from '../shared/HouseChips';
@@ -73,7 +73,7 @@ export function AuditLog({ activeSeason }: { activeSeason: Season | null }) {
             <select id="audit-season" className="input" value={seasonId} onChange={(e) => setSeasonId(e.target.value)}>
               {seasons.map((s) => (
                 <option key={s.id} value={s.id}>
-                  {s.name}
+                  {seasonLabel(s)}
                   {s.status === 'active' ? ' (active)' : ''}
                 </option>
               ))}

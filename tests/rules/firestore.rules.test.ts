@@ -56,7 +56,7 @@ beforeEach(async () => {
     const db = ctx.firestore();
     const user = (email: string, role: string, houseId: string | null) =>
       setDoc(doc(db, 'users', email), { email, displayName: email, role, houseId, seasonId: SEASON, totalPoints: 0 });
-    await setDoc(doc(db, 'seasons', SEASON), { name: '2026-2027 Academic Year', status: 'active' });
+    await setDoc(doc(db, 'seasons', SEASON), { name: 'LeaderQuest', status: 'active' });
     await setDoc(doc(db, 'seasons', '2025-2026'), { name: 'Old', status: 'closed' });
     await setDoc(doc(db, 'houses', 'lumina'), { name: 'Lumina', totalPoints: 100, seasonId: SEASON, advisors: [] });
     await setDoc(doc(db, 'houses', 'doron'), { name: 'Doron', totalPoints: 0, seasonId: SEASON, advisors: [] });

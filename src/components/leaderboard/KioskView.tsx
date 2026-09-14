@@ -4,7 +4,7 @@ import { useEffect, useState, useSyncExternalStore } from 'react';
 import { useHouses } from '../../hooks/useHouses';
 import { useSeasonById } from '../../hooks/useSeason';
 import { HOUSES } from '../../lib/constants';
-import { cn, formatPoints, rgba } from '../../lib/utils';
+import { cn, formatPoints, rgba, seasonLabel } from '../../lib/utils';
 import { Crest } from '../shared/Crest';
 import { HouseIconSvg } from '../shared/HouseIcon';
 import { Trophy } from '../shared/Trophy';
@@ -108,7 +108,7 @@ export function KioskView() {
       onClick={() => hint && toggleFullscreen()}
     >
       {/* Stage lighting */}
-      <div className="pointer-events-none absolute inset-0" style={{ background: 'radial-gradient(ellipse 70% 55% at 50% 45%, rgba(16,42,92,0.75), transparent 70%)' }} />
+      <div className="pointer-events-none absolute inset-0" style={{ background: 'radial-gradient(ellipse 70% 55% at 50% 45%, rgba(26, 41, 64,0.75), transparent 70%)' }} />
       {leader && leader.totalPoints > 0 && (
         <div
           className="pointer-events-none absolute inset-0 transition-[background] duration-1000"
@@ -121,7 +121,8 @@ export function KioskView() {
         <div className="flex w-[18vw] items-center gap-[1vw]">
           <Crest size={0} className="h-[7vh] w-[5.8vh]" />
           <div>
-            <p className="font-display text-[2.4vh] font-bold leading-none text-gold-gradient">CMII Houses</p>
+            <p className="font-heading text-[1.3vh] font-semibold uppercase leading-none tracking-[0.3em] text-gold/80">CMII</p>
+            <p className="mt-[0.4vh] whitespace-nowrap font-display text-[2.4vh] font-bold leading-none text-gold-gradient">House Points</p>
             <LiveIndicator live={live} className="mt-[0.8vh] !text-[1.3vh]" />
           </div>
         </div>
@@ -136,7 +137,7 @@ export function KioskView() {
             <span className="h-px w-[8vw] bg-gradient-to-r from-transparent to-gold" />
             <span className="font-heading text-[2vh] font-semibold uppercase tracking-[0.35em]">
               {season?.status === 'closed' ? 'Final Standings · ' : ''}
-              {season?.name ?? houses[0]?.seasonId ?? ''}
+              {season ? seasonLabel(season) : houses[0]?.seasonId ? seasonLabel({ id: houses[0].seasonId }) : ''}
             </span>
             <span className="h-px w-[8vw] bg-gradient-to-l from-transparent to-gold" />
           </div>

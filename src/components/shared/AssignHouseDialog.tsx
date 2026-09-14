@@ -93,7 +93,7 @@ function AssignDialog({ student, counts, onClose }: AssignHouseDialogProps & { s
           <button type="button" className="font-heading text-xs font-bold uppercase tracking-[0.14em] text-parchment-ink/60 hover:text-parchment-ink" onClick={onClose} disabled={busy}>
             Cancel
           </button>
-          <button type="button" className="btn btn-color" style={{ ['--btn' as string]: '#1C3F7A', color: '#fff' }} disabled={!choice || busy} onClick={save}>
+          <button type="button" className="btn btn-color" style={{ ['--btn' as string]: '#1A2940', color: '#fff' }} disabled={!choice || busy} onClick={save}>
             {busy && <Spinner size={14} className="border-white/30 border-t-white" />}
             {choice ? `Assign to ${HOUSES[choice].name}` : 'Choose a house'}
           </button>

@@ -6,7 +6,7 @@ import { useFlip } from '../../hooks/useFlip';
 import { useSeasonById } from '../../hooks/useSeason';
 import { HOUSES } from '../../lib/constants';
 import type { RankedHouse } from '../../lib/types';
-import { cn, darken, formatPoints, lighten, rgba, roman } from '../../lib/utils';
+import { cn, darken, formatPoints, lighten, rgba, roman, seasonLabel } from '../../lib/utils';
 import { AnimatedNumber } from '../shared/AnimatedNumber';
 import { OrnamentalDivider } from '../shared/OrnamentalDivider';
 import { Panther } from '../shared/Panther';
@@ -133,7 +133,10 @@ export function Leaderboard() {
           <h1 className="font-display text-[34px] font-black leading-none text-gold-gradient sm:text-6xl">CMII Media Cup</h1>
           <Trophy size={44} className="hidden drop-shadow-[0_0_14px_rgba(212,168,67,0.5)] sm:block" />
         </div>
-        <OrnamentalDivider label={season?.name ?? (houses[0]?.seasonId ? `${houses[0].seasonId} Season` : 'House Standings')} className="mx-auto mt-4 max-w-md" />
+        <OrnamentalDivider
+          label={season ? seasonLabel(season) : houses[0]?.seasonId ? seasonLabel({ id: houses[0].seasonId }) : 'House Standings'}
+          className="mx-auto mt-4 max-w-lg"
+        />
         <div className="mt-2.5 flex items-center justify-center gap-4">
           {closed ? (
             <span className="font-heading text-[10px] font-bold uppercase tracking-[0.25em] text-gold">Final standings</span>

@@ -5,10 +5,10 @@ module.exports = {
     extend: {
       colors: {
         royal: {
-          DEFAULT: '#0A1628',
-          night: '#0D0D12',
-          panel: '#102A5C',
-          deep: '#0C1D3E',
+          DEFAULT: '#0F1B2D',
+          night: '#0F1B2D',
+          panel: '#1A2940',
+          deep: '#15233A',
         },
         parchment: {
           DEFAULT: '#F5E6C8',

@@ -94,9 +94,9 @@ export type Role = (typeof ROLES)[number];
 export const NOTE_MAX_LENGTH = 280;
 
 export const COLORS = {
-  royal: '#0A1628',
-  night: '#0D0D12',
-  panel: '#102A5C',
+  royal: '#0F1B2D',
+  night: '#0F1B2D',
+  panel: '#1A2940',
   parchment: '#F5E6C8',
   gold: '#D4A843',
   goldLight: '#EBCB7A',

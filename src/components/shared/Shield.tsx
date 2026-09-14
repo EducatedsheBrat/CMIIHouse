@@ -69,7 +69,7 @@ export function Shield({ houseId, size = 48, glow = false, className, title }: S
 function UnsortedShield({ size, className }: { size: number; className?: string }) {
   return (
     <svg width={size} height={size * 1.2} viewBox="0 0 100 120" className={className} role="img" aria-label="Unsorted">
-      <path d={SHIELD_PATH} fill="#102A5C" stroke="#D4A843" strokeWidth="5" strokeDasharray="8 6" />
+      <path d={SHIELD_PATH} fill="#1A2940" stroke="#D4A843" strokeWidth="5" strokeDasharray="8 6" />
       <text x="50" y="72" textAnchor="middle" style={{ fontFamily: 'var(--font-cinzel), Georgia, serif' }} fontSize="40" fill="#D4A843">?</text>
     </svg>
   );

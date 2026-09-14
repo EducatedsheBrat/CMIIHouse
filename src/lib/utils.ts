@@ -56,11 +56,25 @@ export function lighten(hex: string, t: number): string {
 }
 
 export function darken(hex: string, t: number): string {
-  return mix(hex, '#0A1628', t);
+  return mix(hex, '#0F1B2D', t);
 }
 
 export function houseColor(houseId: string | null | undefined): string {
   return isHouseId(houseId) ? HOUSES[houseId].color : '#D4A843';
+}
+
+// ---------- Seasons ----------
+
+/**
+ * Display label for a season. A season's name is that year's journey ("LeaderQuest");
+ * its id is the academic year ("2026-2027"). → "LeaderQuest · 2026–2027".
+ */
+export function seasonLabel(season: { id: string; name?: string | null }): string {
+  const year = season.id.replace('-', '–');
+  const name = season.name?.trim();
+  if (!name) return `${year} Season`;
+  if (name.includes(season.id) || name.includes(year)) return name;
+  return `${name} · ${year}`;
 }
 
 // ---------- Houses ----------

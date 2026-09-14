@@ -27,11 +27,11 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: 'LeaderQuest — CMII Houses',
-    template: '%s · LeaderQuest',
+    default: 'CMII House Points',
+    template: '%s · CMII House Points',
   },
   description: 'The CMII House System at Georgia State University. Earn points for your house and compete for the CMII Media Cup.',
-  applicationName: 'LeaderQuest',
+  applicationName: 'CMII House Points',
   manifest: '/manifest.json',
   icons: {
     icon: [
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     capable: true,
-    title: 'LeaderQuest',
+    title: 'House Points',
     statusBarStyle: 'black-translucent',
   },
 };
@@ -51,7 +51,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
-  themeColor: '#0A1628',
+  themeColor: '#0F1B2D',
   colorScheme: 'dark',
 };
 

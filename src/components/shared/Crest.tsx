@@ -5,7 +5,7 @@ import { HOUSES } from '../../lib/constants';
 import { HouseIconGlyph } from './HouseIcon';
 import { SHIELD_PATH } from './Shield';
 
-/** The CMII Houses crest: a shield quartered in the four house colors. */
+/** The CMII House Points crest: a shield quartered in the four house colors. */
 export function Crest({ size = 40, className }: { size?: number; className?: string }) {
   const uid = useId().replace(/:/g, '');
   const detailed = size >= 56;
@@ -16,7 +16,7 @@ export function Crest({ size = 40, className }: { size?: number; className?: str
     { house: HOUSES.kaizen, x: 50, y: 60 },
   ];
   return (
-    <svg width={size} height={size * 1.2} viewBox="0 0 100 120" className={className} role="img" aria-label="CMII Houses crest">
+    <svg width={size} height={size * 1.2} viewBox="0 0 100 120" className={className} role="img" aria-label="CMII House Points crest">
       <defs>
         <clipPath id={`clip-${uid}`}>
           <path d={SHIELD_PATH} />
@@ -46,7 +46,7 @@ export function Crest({ size = 40, className }: { size?: number; className?: str
         <rect x="0" y="56" width="100" height="8" fill={`url(#trim-${uid})`} />
       </g>
       <path d={SHIELD_PATH} fill="none" stroke={`url(#trim-${uid})`} strokeWidth={detailed ? 4 : 6} strokeLinejoin="round" />
-      <circle cx="50" cy="60" r={detailed ? 13 : 17} fill="#0A1628" stroke={`url(#trim-${uid})`} strokeWidth="3" />
+      <circle cx="50" cy="60" r={detailed ? 13 : 17} fill="#0F1B2D" stroke={`url(#trim-${uid})`} strokeWidth="3" />
       <text
         x="50"
         y="60"

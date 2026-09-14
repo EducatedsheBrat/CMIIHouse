@@ -6,7 +6,7 @@ import { useActiveSeason } from '../../hooks/useSeason';
 import { useAuth } from '../../hooks/useAuth';
 import { HOUSES, type HouseId } from '../../lib/constants';
 import type { PointAward } from '../../lib/types';
-import { dayLabel, toDate } from '../../lib/utils';
+import { dayLabel, seasonLabel, toDate } from '../../lib/utils';
 import { HouseChips } from '../shared/HouseChips';
 import { OrnamentalDivider } from '../shared/OrnamentalDivider';
 import { PageHeader } from '../shared/PageHeader';
@@ -33,7 +33,7 @@ export function ActivityFeed() {
 
   return (
     <div>
-      <PageHeader eyebrow={season?.name ?? 'Activity'} title="The Chronicle" subtitle="Every point awarded this season, as it happens." />
+      <PageHeader eyebrow={season ? seasonLabel(season) : 'Activity'} title="The Chronicle" subtitle="Every point awarded this season, as it happens." />
 
       <HouseChips value={house} onChange={setHouse} className="mb-5" />
 

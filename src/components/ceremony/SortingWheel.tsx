@@ -124,7 +124,7 @@ export const SortingWheel = forwardRef<SortingWheelHandle, { landed: HouseId | n
           </linearGradient>
         </defs>
         <path d="M20 44 L4 12 A16 16 0 0 1 36 12 Z" fill="url(#lq-pointer-gold)" stroke="#FBE9B4" strokeWidth="1.2" />
-        <circle cx="20" cy="14" r="6" fill="#0A1628" stroke="#FBE9B4" strokeWidth="1.2" />
+        <circle cx="20" cy="14" r="6" fill="#0F1B2D" stroke="#FBE9B4" strokeWidth="1.2" />
         <path d="M20 9.5 L23.5 14 L20 18.5 L16.5 14 Z" fill={win?.color ?? '#D4A843'} />
       </svg>
     </div>

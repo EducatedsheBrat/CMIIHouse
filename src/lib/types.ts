@@ -10,7 +10,7 @@ export interface HouseStanding {
 
 export interface Season {
   id: string; // "2026-2027"
-  name: string; // "2026-2027 Academic Year"
+  name: string; // the year's journey, e.g. "LeaderQuest" — display with seasonLabel()
   status: 'active' | 'closed';
   startDate: Timestamp;
   endDate: Timestamp;

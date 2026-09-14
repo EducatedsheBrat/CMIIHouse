@@ -1,4 +1,4 @@
-// Generates the LeaderQuest panther mascots from one articulated rig.
+// Generates the CMII House Points panther mascots from one articulated rig.
 //   npm run panthers            → src/assets/panthers/*.svg
 //   npm run panthers -- --preview  → also writes PNG contact sheets to scripts/.panther-preview/
 //

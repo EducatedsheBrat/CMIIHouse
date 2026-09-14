@@ -63,7 +63,7 @@ function Dialog({ title, children, confirmLabel = 'Confirm', tone = 'default', o
           <button
             type="button"
             className="btn btn-color"
-            style={{ ['--btn' as string]: tone === 'danger' ? '#B83A3A' : '#1C3F7A', color: '#fff' }}
+            style={{ ['--btn' as string]: tone === 'danger' ? '#B83A3A' : '#1A2940', color: '#fff' }}
             onClick={run}
             disabled={busy}
           >

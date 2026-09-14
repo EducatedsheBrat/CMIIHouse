@@ -60,8 +60,8 @@ export function SideNav() {
       <Link href="/leaderboard" className="flex items-center gap-3 px-6 pb-5 pt-7">
         <Crest size={40} />
         <div>
-          <p className="font-display text-lg font-bold leading-none text-gold-gradient">LeaderQuest</p>
-          <p className="mt-1 font-heading text-[10px] uppercase tracking-[0.22em] text-white/50">CMII Houses</p>
+          <p className="font-heading text-[10px] font-semibold uppercase leading-none tracking-[0.3em] text-gold/80">CMII</p>
+          <p className="mt-1 font-display text-lg font-bold leading-none text-gold-gradient">House Points</p>
         </div>
       </Link>
       <div className="mx-6 mb-4 h-px bg-gradient-to-r from-gold/60 via-gold/25 to-transparent" />

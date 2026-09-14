@@ -5,7 +5,7 @@
 import { HOUSES, HOUSE_IDS, type CategoryKey, type HouseId, type Role } from './constants';
 
 export const DEMO_SEASON_ID = '2026-2027';
-export const DEMO_PASSWORD = 'LeaderQuest-demo-2026';
+export const DEMO_PASSWORD = 'HousePoints-demo-2026';
 export const DEMO_ADMIN_EMAIL = 'demo.admin@gsu.edu';
 
 export interface SeedUser {
@@ -91,7 +91,8 @@ export function seedSeason(now = new Date()) {
   const year = now.getMonth() >= 6 ? now.getFullYear() : now.getFullYear() - 1;
   return {
     id: DEMO_SEASON_ID,
-    name: '2026-2027 Academic Year',
+    // The season's name is that year's journey; the app itself is always CMII House Points.
+    name: 'LeaderQuest',
     status: 'active' as const,
     startDate: new Date(year, 7, 17),
     endDate: new Date(year + 1, 4, 7),

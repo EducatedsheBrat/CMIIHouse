@@ -64,6 +64,15 @@ async function currentStandings(seasonId: string): Promise<HouseStanding[]> {
     .sort((a, b) => b.totalPoints - a.totalPoints);
 }
 
+/** Renames a season's journey (e.g. "LeaderQuest"). The id (academic year) never changes. */
+export async function renameSeason(seasonId: string, name: string) {
+  const trimmed = name.trim();
+  if (!trimmed) throw new Error('Give the season a name.');
+  const batch = writeBatch(db);
+  batch.update(doc(db, 'seasons', seasonId), { name: trimmed });
+  await batch.commit();
+}
+
 export async function closeSeason(seasonId: string) {
   const finalStandings = await currentStandings(seasonId);
   const batch = writeBatch(db);

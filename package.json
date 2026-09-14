@@ -1,8 +1,8 @@
 {
-  "name": "leaderquest",
+  "name": "cmii-house-points",
   "private": true,
   "version": "0.1.0",
-  "description": "LeaderQuest — the CMII House System points tracker for Georgia State University",
+  "description": "CMII House Points — the CMII House System points tracker for Georgia State University",
   "scripts": {
     "dev": "next dev",
     "dev:emu": "node scripts/with-env.mjs .env.emulator next dev",

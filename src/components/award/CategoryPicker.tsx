@@ -32,7 +32,7 @@ function Medallion({ category, selected, size = 64 }: { category: CategoryKey; s
           </radialGradient>
         </defs>
       </svg>
-      <span className="relative" style={{ color: selected ? '#0D0D12' : lighten(color, 0.25) }}>
+      <span className="relative" style={{ color: selected ? '#0F1B2D' : lighten(color, 0.25) }}>
         <CategoryIcon category={category} size={size * 0.42} />
       </span>
     </span>

@@ -1,13 +1,13 @@
 {
-  "name": "LeaderQuest — CMII Houses",
-  "short_name": "LeaderQuest",
+  "name": "CMII House Points",
+  "short_name": "House Points",
   "description": "The CMII House System at Georgia State University. Earn points for your house and compete for the CMII Media Cup.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",
-  "theme_color": "#0A1628",
-  "background_color": "#0D0D12",
+  "theme_color": "#0F1B2D",
+  "background_color": "#0F1B2D",
   "icons": [
     { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },

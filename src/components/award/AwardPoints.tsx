@@ -8,7 +8,7 @@ import { useActiveSeason } from '../../hooks/useSeason';
 import { useStudents } from '../../hooks/useStudents';
 import { CATEGORIES, HOUSES, isHouseId, NOTE_MAX_LENGTH, type CategoryKey } from '../../lib/constants';
 import type { AppUser } from '../../lib/types';
-import { clamp, cn, lighten, rgba } from '../../lib/utils';
+import { clamp, cn, lighten, rgba, seasonLabel } from '../../lib/utils';
 import { AnimatedNumber } from '../shared/AnimatedNumber';
 import { Avatar } from '../shared/Avatar';
 import { GoldBorder } from '../shared/GoldBorder';
@@ -127,7 +127,7 @@ export function AwardPoints() {
 
   return (
     <div>
-      <PageHeader eyebrow={season ? season.name : 'Faculty'} title="Award Points" subtitle="Recognize a student and add to their house’s tally." />
+      <PageHeader eyebrow={season ? seasonLabel(season) : 'Faculty'} title="Award Points" subtitle="Recognize a student and add to their house’s tally." />
 
       {!seasonLoading && !season && (
         <Notice tone="error" className="mb-5">

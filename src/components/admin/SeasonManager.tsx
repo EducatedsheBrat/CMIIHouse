@@ -4,10 +4,10 @@ import { useState, type FormEvent } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useHouses } from '../../hooks/useHouses';
 import { useSeasons } from '../../hooks/useSeason';
-import { activateSeason, closeSeason, createSeason, ensureHouses, loadDemoData, recomputeSeasonTotals } from '../../lib/adminActions';
+import { activateSeason, closeSeason, createSeason, ensureHouses, loadDemoData, recomputeSeasonTotals, renameSeason } from '../../lib/adminActions';
 import { HOUSES } from '../../lib/constants';
 import type { Season } from '../../lib/types';
-import { cn, formatDate, formatPoints } from '../../lib/utils';
+import { cn, formatDate, formatPoints, seasonLabel } from '../../lib/utils';
 import { ConfirmDialog } from '../shared/ConfirmDialog';
 import { Crown } from '../shared/Crown';
 import { GoldBorder } from '../shared/GoldBorder';
@@ -47,6 +47,66 @@ function StatusBadge({ season }: { season: Season }) {
   );
 }
 
+/** Inline rename for a season's journey name. */
+function SeasonName({ season }: { season: Season }) {
+  const toast = useToast();
+  const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState(season.name);
+  const [saving, setSaving] = useState(false);
+
+  const save = async (e: FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      await renameSeason(season.id, value);
+      toast(`Season ${season.id} is now “${value.trim()}”.`, 'success');
+      setEditing(false);
+    } catch (err) {
+      toast((err as Error).message, 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (!editing) {
+    return (
+      <span className="flex items-center gap-2">
+        <span className="font-semibold">{season.name || '(unnamed)'}</span>
+        <button
+          type="button"
+          className="btn-text text-[10px]"
+          onClick={() => {
+            setValue(season.name);
+            setEditing(true);
+          }}
+        >
+          Rename
+        </button>
+      </span>
+    );
+  }
+
+  return (
+    <form onSubmit={save} className="flex items-center gap-2">
+      <input
+        autoFocus
+        className="input max-w-[220px] py-1.5 text-sm"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        placeholder="LeaderQuest"
+        aria-label={`Name for season ${season.id}`}
+      />
+      <button type="submit" className="btn btn-gold btn-sm" disabled={saving || !value.trim()}>
+        {saving && <Spinner size={12} />}
+        Save
+      </button>
+      <button type="button" className="btn-text text-[10px]" onClick={() => setEditing(false)} disabled={saving}>
+        Cancel
+      </button>
+    </form>
+  );
+}
+
 export function SeasonManager({ activeSeason }: { activeSeason: Season | null }) {
   const { profile } = useAuth();
   const toast = useToast();
@@ -69,7 +129,7 @@ export function SeasonManager({ activeSeason }: { activeSeason: Season | null })
     try {
       await createSeason({
         id,
-        name: form.name.trim() || `${id} Academic Year`,
+        name: form.name.trim() || `${id} Season`,
         startDate: new Date(`${form.start}T00:00:00`),
         endDate: new Date(`${form.end}T23:59:59`),
         createdBy: profile.id,
@@ -105,7 +165,7 @@ export function SeasonManager({ activeSeason }: { activeSeason: Season | null })
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <p className="eyebrow">Current season</p>
-              <h2 className="mt-1 font-display text-2xl font-bold">{activeSeason.name}</h2>
+              <h2 className="mt-1 font-display text-2xl font-bold">{seasonLabel(activeSeason)}</h2>
               <p className="mt-1 text-sm text-white/50">
                 {formatDate(activeSeason.startDate)} – {formatDate(activeSeason.endDate)}
               </p>
@@ -164,8 +224,9 @@ export function SeasonManager({ activeSeason }: { activeSeason: Season | null })
             {!idValid && <p className="mt-1 text-xs text-red-300">Use the format YYYY-YYYY.</p>}
           </div>
           <div>
-            <label className="label" htmlFor="season-name">Display name</label>
-            <input id="season-name" className="input" value={form.name} placeholder={`${id} Academic Year`} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+            <label className="label" htmlFor="season-name">Journey name</label>
+            <input id="season-name" className="input" value={form.name} placeholder="e.g. LeaderQuest" onChange={(e) => setForm({ ...form, name: e.target.value })} />
+            <p className="mt-1 text-xs text-white/40">Each year’s journey has its own name. The app stays CMII House Points.</p>
           </div>
           <div>
             <label className="label" htmlFor="season-start">Start date</label>
@@ -196,8 +257,8 @@ export function SeasonManager({ activeSeason }: { activeSeason: Season | null })
               return (
                 <li key={s.id} className="flex flex-wrap items-center gap-3 rounded-lg border border-white/10 bg-royal/40 px-4 py-3">
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <p className="font-semibold">{s.name}</p>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <SeasonName season={s} />
                       <StatusBadge season={s} />
                     </div>
                     <p className="mt-0.5 text-xs text-white/45">
@@ -223,13 +284,13 @@ export function SeasonManager({ activeSeason }: { activeSeason: Season | null })
 
       <ConfirmDialog
         open={pending?.kind === 'activate'}
-        title={`Activate ${pending?.kind === 'activate' ? pending.season.name : ''}?`}
+        title={`Activate ${pending?.kind === 'activate' ? seasonLabel(pending.season) : ''}?`}
         confirmLabel="Activate season"
         onClose={() => setPending(null)}
         onConfirm={async () => {
           if (pending?.kind !== 'activate') return;
           await activateSeason(pending.season.id);
-          toast(`${pending.season.name} is now active.`, 'success');
+          toast(`${seasonLabel(pending.season)} is now active.`, 'success');
         }}
       >
         <p>This closes the current season (saving its final standings), moves every house and member into this season, and resets totals to this season’s awards — zero if it’s new.</p>
@@ -275,7 +336,7 @@ export function SeasonManager({ activeSeason }: { activeSeason: Season | null })
           toast(`Demo data loaded into ${result.seasonId}: ${result.peopleCreated} people added, ${result.pointsWritten} awards.`, 'success');
         }}
       >
-        <p>Adds 16 sorted students, 8 unsorted students for the sorting ceremony, 3 faculty advisors, and 10 awards{activeSeason ? ` to ${activeSeason.name}` : ', creating the 2026-2027 season'}. Existing people aren’t changed, and running it twice won’t duplicate awards.</p>
+        <p>Adds 16 sorted students, 8 unsorted students for the sorting ceremony, 3 faculty advisors, and 10 awards{activeSeason ? ` to ${seasonLabel(activeSeason)}` : ', creating the LeaderQuest 2026-2027 season'}. Existing people aren’t changed, and running it twice won’t duplicate awards.</p>
         <p className="mt-2">These are roster records only — to sign in as the demo users, run the seed script instead.</p>
       </ConfirmDialog>
     </div>

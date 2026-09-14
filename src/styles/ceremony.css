@@ -6,8 +6,8 @@
   overflow-y: auto;
   padding: 24px 32px;
   background:
-    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(16, 42, 92, 0.9), transparent 70%),
-    linear-gradient(180deg, #0a1628, #0d0d12);
+    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(26, 41, 64, 0.9), transparent 70%),
+    linear-gradient(180deg, #0F1B2D, #0F1B2D);
 }
 .lq-ceremony.is-presenting .lq-wheel {
   --wheel-size: min(52vh, 560px);
@@ -34,7 +34,7 @@
   border-radius: 50%;
   border: 4px solid #d4a843;
   box-shadow:
-    0 0 0 5px #0d0d12,
+    0 0 0 5px #0F1B2D,
     0 0 0 6px rgba(212, 168, 67, 0.45),
     0 0 40px -4px rgba(212, 168, 67, 0.45),
     inset 0 0 24px rgba(0, 0, 0, 0.6);
@@ -82,7 +82,7 @@
   inset: 0;
   border-radius: 50%;
   background:
-    radial-gradient(circle, rgba(10, 22, 40, 0.75) 0%, rgba(10, 22, 40, 0.1) 32%, transparent 55%, rgba(0, 0, 0, 0.35) 100%),
+    radial-gradient(circle, rgba(15, 27, 45, 0.75) 0%, rgba(15, 27, 45, 0.1) 32%, transparent 55%, rgba(0, 0, 0, 0.35) 100%),
     repeating-conic-gradient(from 0deg, rgba(255, 255, 255, 0.04) 0deg 2deg, transparent 2deg 6deg);
   pointer-events: none;
 }
@@ -154,7 +154,7 @@
 .lq-wheel.is-landed .lq-wheel__frame {
   border-color: var(--win-color);
   box-shadow:
-    0 0 0 5px #0d0d12,
+    0 0 0 5px #0F1B2D,
     0 0 0 6px var(--win-color),
     0 0 60px 4px var(--win-glow);
   transition: border-color 0.6s ease, box-shadow 0.6s ease;
@@ -168,9 +168,9 @@
   height: 26%;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #16356f, #0a1628 70%);
+  background: radial-gradient(circle at 35% 30%, #2A3F5E, #0F1B2D 70%);
   border: 3px solid #d4a843;
-  box-shadow: 0 0 0 4px #0d0d12, 0 0 0 5px rgba(212, 168, 67, 0.5), 0 0 24px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 0 4px #0F1B2D, 0 0 0 5px rgba(212, 168, 67, 0.5), 0 0 24px rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;

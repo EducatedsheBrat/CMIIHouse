@@ -1,5 +1,5 @@
 /**
- * Seeds Firestore (and Firebase Auth demo accounts) for LeaderQuest.
+ * Seeds Firestore (and Firebase Auth demo accounts) for CMII House Points.
  *
  *   npx ts-node src/scripts/seed.ts                      # real project (needs a service account)
  *   npx ts-node src/scripts/seed.ts --emulator           # local emulators (npm run emulators)
@@ -109,7 +109,7 @@ async function ensureAuthAccount(user: SeedUser): Promise<string | undefined> {
 }
 
 async function main() {
-  console.log(`\n⚜  Seeding LeaderQuest → ${projectId}${useEmulator ? ' (emulator)' : ''}${minimal ? ' — minimal' : ''}\n`);
+  console.log(`\n⚜  Seeding CMII House Points → ${projectId}${useEmulator ? ' (emulator)' : ''}${minimal ? ' — minimal' : ''}\n`);
   const now = new Date();
   const season = { ...seedSeason(now), ...(minimal && extraAdmin ? { createdBy: extraAdmin.email } : {}) };
 

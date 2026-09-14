@@ -114,7 +114,7 @@ export function HouseStats({ activeSeason }: { activeSeason: Season | null }) {
               const houseTotal = cats ? CATEGORY_KEYS.reduce((s, k) => s + cats[k].total, 0) : standing?.totalPoints ?? 0;
               const members = counts[id];
               return (
-                <article key={id} className="relative overflow-hidden rounded-card border p-4" style={{ borderColor: rgba(house.color, 0.45), background: `linear-gradient(160deg, ${rgba(house.color, 0.14)}, rgba(12,29,62,0.9) 55%)` }}>
+                <article key={id} className="relative overflow-hidden rounded-card border p-4" style={{ borderColor: rgba(house.color, 0.45), background: `linear-gradient(160deg, ${rgba(house.color, 0.14)}, rgba(21, 34, 54,0.9) 55%)` }}>
                   <div className="flex items-center gap-3">
                     <Panther house={id} glow className="w-24 shrink-0" />
                     <div className="min-w-0 flex-1">

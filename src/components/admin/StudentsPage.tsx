@@ -8,7 +8,7 @@ import { removeUser } from '../../lib/adminActions';
 import { HOUSES, HOUSE_IDS, type HouseId } from '../../lib/constants';
 import { countMembers } from '../../lib/sorting';
 import type { AppUser } from '../../lib/types';
-import { cn, formatPoints, rgba } from '../../lib/utils';
+import { cn, formatPoints, rgba, seasonLabel } from '../../lib/utils';
 import { NavIcon } from '../layout/NavIcons';
 import { AssignHouseDialog } from '../shared/AssignHouseDialog';
 import { Avatar } from '../shared/Avatar';
@@ -55,7 +55,7 @@ export function StudentsPage() {
         ← Council Chamber
       </Link>
       <PageHeader
-        eyebrow={season?.name ?? 'Administration'}
+        eyebrow={season ? seasonLabel(season) : 'Administration'}
         title="Students"
         subtitle="Add students to the rolls. They stay unsorted until the sorting ceremony."
         actions={

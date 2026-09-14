@@ -7,7 +7,7 @@ import { useActiveSeason } from '../../hooks/useSeason';
 import { useStudents } from '../../hooks/useStudents';
 import { useSorting, type CeremonyStage } from '../../hooks/useSorting';
 import { HOUSES, HOUSE_IDS } from '../../lib/constants';
-import { cn, lighten, rgba } from '../../lib/utils';
+import { cn, lighten, rgba, seasonLabel } from '../../lib/utils';
 import { OrnamentalDivider } from '../shared/OrnamentalDivider';
 import { PageHeader } from '../shared/PageHeader';
 import { Panther } from '../shared/Panther';
@@ -113,7 +113,7 @@ export function SortingCeremony() {
   return (
     <div ref={root} className={cn('lq-ceremony', fullscreen && 'is-presenting')}>
       <PageHeader
-        eyebrow={season?.name ?? 'Sorting Ceremony'}
+        eyebrow={season ? seasonLabel(season) : 'Sorting Ceremony'}
         title="The Sorting Ceremony"
         subtitle={fullscreen ? undefined : 'Select a student, spin the wheel, and welcome them to their house.'}
         actions={

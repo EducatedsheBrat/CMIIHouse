@@ -94,7 +94,7 @@ export function InstallPrompt() {
       <div className="parchment flex items-center gap-3 p-4">
         <Crest size={34} />
         <div className="min-w-0 flex-1">
-          <p className="font-heading text-sm font-bold">Install LeaderQuest</p>
+          <p className="font-heading text-sm font-bold">Install House Points</p>
           {deferred ? (
             <p className="text-xs text-parchment-ink/70">Add it to your home screen for one-tap point awards.</p>
           ) : (
@@ -104,7 +104,7 @@ export function InstallPrompt() {
           )}
         </div>
         {deferred && (
-          <button type="button" onClick={install} className="btn btn-sm btn-color" style={{ ['--btn' as string]: '#1C3F7A', color: '#fff' }}>
+          <button type="button" onClick={install} className="btn btn-sm btn-color" style={{ ['--btn' as string]: '#1A2940', color: '#fff' }}>
             Install
           </button>
         )}

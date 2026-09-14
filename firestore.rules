@@ -1,6 +1,6 @@
 rules_version = '2';
 
-// LeaderQuest — CMII House System
+// CMII House Points — CMII House System
 //
 // Identity model: user documents are keyed by the member's lowercase GSU email
 // (users/jane.doe@gsu.edu). Admins provision people *before* they ever sign in,
