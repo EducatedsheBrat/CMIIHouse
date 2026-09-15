@@ -44,6 +44,16 @@
         { "fieldPath": "seasonId", "order": "ASCENDING" },
         { "fieldPath": "awardedAt", "order": "DESCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "points",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "category", "order": "ASCENDING" },
+        { "fieldPath": "houseId", "order": "ASCENDING" },
+        { "fieldPath": "seasonId", "order": "ASCENDING" },
+        { "fieldPath": "amount", "order": "ASCENDING" }
+      ]
     }
   ],
   "fieldOverrides": []
