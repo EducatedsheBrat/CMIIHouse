@@ -12,7 +12,7 @@ export function SetupNotice() {
         <div className="flex items-center gap-4">
           <Crest size={56} />
           <div>
-            <h1 className="font-display text-2xl font-bold text-gold-gradient">CMII House Points</h1>
+            <h1 className="font-display text-2xl font-bold text-gold-gradient">CMII Den Points</h1>
             <p className="text-sm text-white/55">Firebase isn’t configured yet.</p>
           </div>
         </div>

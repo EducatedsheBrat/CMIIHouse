@@ -27,11 +27,11 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: 'CMII House Points',
-    template: '%s · CMII House Points',
+    default: 'Den Points',
+    template: '%s · Den Points',
   },
-  description: 'The CMII House System at Georgia State University. Earn points for your house and compete for the CMII Media Cup.',
-  applicationName: 'CMII House Points',
+  description: 'Den Points is the CMII House System at Georgia State University. Earn points for your house and compete for the CMII Media Cup.',
+  applicationName: 'Den Points',
   manifest: '/manifest.json',
   icons: {
     icon: [
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     capable: true,
-    title: 'House Points',
+    title: 'Den Points',
     statusBarStyle: 'black-translucent',
   },
 };

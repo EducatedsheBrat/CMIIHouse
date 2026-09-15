@@ -5,7 +5,7 @@ import { HOUSES } from '../../lib/constants';
 import { HouseIconGlyph } from './HouseIcon';
 import { SHIELD_PATH } from './Shield';
 
-/** The CMII House Points crest: a shield quartered in the four house colors. */
+/** The CMII Den Points crest: a shield quartered in the four house colors. */
 export function Crest({ size = 40, className }: { size?: number; className?: string }) {
   const uid = useId().replace(/:/g, '');
   const detailed = size >= 56;
@@ -16,7 +16,7 @@ export function Crest({ size = 40, className }: { size?: number; className?: str
     { house: HOUSES.kaizen, x: 50, y: 60 },
   ];
   return (
-    <svg width={size} height={size * 1.2} viewBox="0 0 100 120" className={className} role="img" aria-label="CMII House Points crest">
+    <svg width={size} height={size * 1.2} viewBox="0 0 100 120" className={className} role="img" aria-label="CMII Den Points crest">
       <defs>
         <clipPath id={`clip-${uid}`}>
           <path d={SHIELD_PATH} />

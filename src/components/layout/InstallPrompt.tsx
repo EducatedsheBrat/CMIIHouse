@@ -94,7 +94,7 @@ export function InstallPrompt() {
       <div className="parchment flex items-center gap-3 p-4">
         <Crest size={34} />
         <div className="min-w-0 flex-1">
-          <p className="font-heading text-sm font-bold">Install House Points</p>
+          <p className="font-heading text-sm font-bold">Install Den Points</p>
           {deferred ? (
             <p className="text-xs text-parchment-ink/70">Add it to your home screen for one-tap point awards.</p>
           ) : (

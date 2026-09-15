@@ -122,7 +122,7 @@ export function KioskView() {
           <Crest size={0} className="h-[7vh] w-[5.8vh]" />
           <div>
             <p className="font-heading text-[1.3vh] font-semibold uppercase leading-none tracking-[0.3em] text-gold/80">CMII</p>
-            <p className="mt-[0.4vh] whitespace-nowrap font-display text-[2.4vh] font-bold leading-none text-gold-gradient">House Points</p>
+            <p className="mt-[0.4vh] whitespace-nowrap font-display text-[2.4vh] font-bold leading-none text-gold-gradient">Den Points</p>
             <LiveIndicator live={live} className="mt-[0.8vh] !text-[1.3vh]" />
           </div>
         </div>

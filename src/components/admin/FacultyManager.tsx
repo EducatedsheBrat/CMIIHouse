@@ -169,7 +169,7 @@ export function FacultyManager({ activeSeason }: { activeSeason: Season | null }
           toast(`${removing.displayName} was removed.`, 'success');
         }}
       >
-        {removing?.displayName} will lose access to CMII House Points. Points they already awarded stay in the log.
+        {removing?.displayName} will lose access to Den Points. Points they already awarded stay in the log.
       </ConfirmDialog>
     </div>
   );

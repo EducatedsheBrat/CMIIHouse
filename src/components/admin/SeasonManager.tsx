@@ -226,7 +226,7 @@ export function SeasonManager({ activeSeason }: { activeSeason: Season | null })
           <div>
             <label className="label" htmlFor="season-name">Journey name</label>
             <input id="season-name" className="input" value={form.name} placeholder="e.g. LeaderQuest" onChange={(e) => setForm({ ...form, name: e.target.value })} />
-            <p className="mt-1 text-xs text-white/40">Each year’s journey has its own name. The app stays CMII House Points.</p>
+            <p className="mt-1 text-xs text-white/40">Each year’s journey has its own name. The app stays Den Points.</p>
           </div>
           <div>
             <label className="label" htmlFor="season-start">Start date</label>

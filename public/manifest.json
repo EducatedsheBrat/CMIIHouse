@@ -1,7 +1,7 @@
 {
-  "name": "CMII House Points",
-  "short_name": "House Points",
-  "description": "The CMII House System at Georgia State University. Earn points for your house and compete for the CMII Media Cup.",
+  "name": "Den Points",
+  "short_name": "Den Points",
+  "description": "Den Points is the CMII House System at Georgia State University. Earn points for your house and compete for the CMII Media Cup.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

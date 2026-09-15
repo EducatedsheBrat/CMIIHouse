@@ -9,7 +9,7 @@ import { Crest } from '../shared/Crest';
 import { HouseBadge } from '../shared/HouseBadge';
 import { NavIcon } from './NavIcons';
 
-/** Top bar with CMII House Points branding. On desktop it only shows for signed-out visitors (the sidebar carries the brand). */
+/** Top bar with CMII Den Points branding. On desktop it only shows for signed-out visitors (the sidebar carries the brand). */
 export function Header() {
   const { status, profile, signOut } = useAuth();
   const signedIn = status === 'ready';
@@ -30,7 +30,7 @@ export function Header() {
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 md:px-8">
         <Link href="/" className="flex items-center gap-2.5">
           <Crest size={28} />
-          <span className="font-display text-[16px] font-bold tracking-wide text-gold-gradient sm:text-[17px]">CMII House Points</span>
+          <span className="font-display text-[16px] font-bold tracking-wide text-gold-gradient sm:text-[17px]">CMII Den Points</span>
         </Link>
 
         {status === 'signedOut' || status === 'unprovisioned' ? (

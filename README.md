@@ -1,8 +1,8 @@
-# CMII House Points
+# CMII Den Points
 
 A Progressive Web App for the Creative Media Industries Institute house system at Georgia State University. Faculty award points to students, students are sorted into four houses (Lumina, Doron, Asé, Kaizen), and the houses compete for the **CMII Media Cup**.
 
-**Naming:** *CMII House Points* is the app, and it never changes. Each season has its own journey name. **LeaderQuest** is the 2026-2027 journey. A season's `name` is the journey and its id is the academic year, so the app shows them together as "LeaderQuest · 2026–2027". Admins name or rename a season under **Admin → Seasons**.
+**Naming:** the app is *Den Points* (*CMII Den Points* where the institution needs naming), and that name stays the same every year. "House" is still the word for the four groups: Lumina, Doron, Asé and Kaizen. Each season has its own journey name. **LeaderQuest** is the 2026-2027 journey. A season's `name` is the journey and its id is the academic year, so the app shows them together as "LeaderQuest · 2026–2027". Admins name or rename a season under **Admin → Seasons**.
 
 **Look:** dark theme only. The primary background is GSU blue darkened with grey (`#0F1B2D`); cards, panels and the nav use `#1A2940`, with parchment `#F5E6C8` for dialogs and gold `#D4A843` trim. The palette is defined in `tailwind.config.js` and `src/app/globals.css`.
 
@@ -23,7 +23,7 @@ npm run dev:emu        # terminal 2 — http://localhost:3000
 
 `dev:emu` loads `.env.emulator` (the `NEXT_PUBLIC_*` values for the demo project) through `scripts/with-env.mjs`, since Next.js has no `--mode` flag.
 
-Demo sign-in on the **emulators only** (email/password), all with password `HousePoints-demo-2026`:
+Demo sign-in on the **emulators only** (email/password), all with password `DenPoints-demo-2026`:
 
 | Role    | Email                               | Lands on     |
 |---------|-------------------------------------|--------------|
