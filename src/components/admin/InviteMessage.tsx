@@ -1,22 +1,30 @@
 'use client';
 
 import { useState } from 'react';
+import { useAuth } from '../../hooks/useAuth';
 import { useToast } from '../shared/Toast';
 
 /** The app doesn't send email — admins paste this into their own mail. */
-export function inviteText(name: string) {
+export function inviteText(name: string, kind: 'student' | 'staff' = 'staff', sender = '') {
   const first = name.trim().split(/\s+/)[0] || 'there';
   const url = typeof window === 'undefined' ? '' : window.location.origin;
+  if (kind === 'student') {
+    return {
+      subject: 'You’re on the CMII Den Points rolls',
+      body: `Hi ${first},\n\nYou’ve been added to CMII Den Points, the house points system for the Creative Media Industries Institute.\n\nTo sign in:\n\n1. Go to ${url}\n2. Click “Sign in with your GSU account”\n3. Choose your GSU email (the one this message was sent to). Personal Gmail accounts won’t work.\n\nYou’ll start out unsorted. At the sorting ceremony you’ll be placed in one of four houses: Lumina, Doron, Asé or Kaizen. After that, you’ll earn points for your house and can see the leaderboard and your own progress.\n\nIf you see a “not on the house rolls” message, reply to this email and I’ll check that your address matches.\n\n${sender}\n`,
+    };
+  }
   return {
     subject: 'You’re on the CMII Den Points rolls',
-    body: `Hi ${first},\n\nYou’ve been added to CMII Den Points. Go to ${url} and choose “Sign in with Google”, using your GSU email address (the one I added you with).\n\nIf Google offers more than one account, pick the GSU one.\n`,
+    body: `Hi ${first},\n\nYou’ve been added to CMII Den Points. Go to ${url}, click “Sign in with your GSU account”, and choose your GSU email (the one I added you with).\n\nIf Google offers more than one account, pick the GSU one.\n`,
   };
 }
 
-export function InviteMessage({ name, email }: { name: string; email: string }) {
+export function InviteMessage({ name, email, kind = 'staff' }: { name: string; email: string; kind?: 'student' | 'staff' }) {
   const toast = useToast();
+  const { profile } = useAuth();
   const [copied, setCopied] = useState(false);
-  const { subject, body } = inviteText(name);
+  const { subject, body } = inviteText(name, kind, profile?.displayName);
 
   const copy = async () => {
     try {

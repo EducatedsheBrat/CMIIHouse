@@ -60,7 +60,7 @@ export function StudentAddForm({ activeSeason }: { activeSeason: Season | null }
         </button>
       </form>
 
-      {invite && <InviteMessage key={invite.email} name={invite.name} email={invite.email} />}
+      {invite && <InviteMessage kind="student" key={invite.email} name={invite.name} email={invite.email} />}
 
       {added.length > 0 && (
         <div className="mt-4">
