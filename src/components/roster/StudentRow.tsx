@@ -5,10 +5,11 @@ import type { AppUser } from '../../lib/types';
 import { cn, formatPoints } from '../../lib/utils';
 import { Avatar } from '../shared/Avatar';
 import { NavIcon } from '../layout/NavIcons';
+import { LeaderBadge } from '../shared/LeaderBadge';
 
 const MEDAL = ['#E9C46A', '#C7CED9', '#C98A55'];
 
-export function StudentRow({ student, rank, onAssign }: { student: AppUser; rank: number; onAssign?: (student: AppUser) => void }) {
+export function StudentRow({ student, rank, onAssign, canAward = true }: { student: AppUser; rank: number; onAssign?: (student: AppUser) => void; canAward?: boolean }) {
   const medal = rank <= 3 && student.totalPoints > 0 ? MEDAL[rank - 1] : null;
   return (
     <li className="flex items-center gap-3 border-b border-white/[0.06] px-3 py-2.5 last:border-b-0 sm:px-4">
@@ -20,21 +21,23 @@ export function StudentRow({ student, rank, onAssign }: { student: AppUser; rank
       </span>
       <Avatar name={student.displayName} houseId={student.houseId} size={38} />
       <div className="min-w-0 flex-1">
-        <p className="truncate font-semibold">{student.displayName}</p>
+        <p className="truncate font-semibold">
+          {student.displayName} {student.leader && <LeaderBadge />}
+        </p>
         <p className="truncate text-xs text-white/40">{student.email}</p>
       </div>
       <div className="text-right">
         <p className="scoreboard text-lg leading-none">{formatPoints(student.totalPoints)}</p>
         <p className="mt-0.5 text-[10px] uppercase tracking-wider text-white/40">pts</p>
       </div>
-      <Link
+      {canAward && <Link
         href={`/award?student=${encodeURIComponent(student.id)}`}
         className="ml-1 rounded-md border border-gold/25 p-1.5 text-gold/70 transition hover:border-gold hover:text-gold-light"
         title={`Award points to ${student.displayName}`}
         aria-label={`Award points to ${student.displayName}`}
       >
         <NavIcon name="award" size={18} />
-      </Link>
+      </Link>}
       {onAssign && (
         <button
           type="button"

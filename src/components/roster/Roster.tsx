@@ -1,7 +1,8 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '../../hooks/useAuth';
 import { useSearchParam } from '../../hooks/useSearchParam';
 import { useHouses } from '../../hooks/useHouses';
@@ -25,11 +26,17 @@ import { StudentRow } from './StudentRow';
 
 export function Roster() {
   const [houseParam, setHouseParam] = useSearchParam('house');
-  const houseId: HouseId = isHouseId(houseParam) ? houseParam : 'lumina';
+  const { role, profile } = useAuth();
+  const router = useRouter();
+  // Student leaders get a read-only view of their own house; faculty and admins see every house.
+  const leaderView = role === 'student';
+  const houseId: HouseId = leaderView && profile?.houseId ? profile.houseId : isHouseId(houseParam) ? houseParam : 'lumina';
+  useEffect(() => {
+    if (leaderView && !profile?.leader) router.replace('/dashboard');
+  }, [leaderView, profile?.leader, router]);
   const meta = HOUSES[houseId];
   const [term, setTerm] = useState('');
 
-  const { role } = useAuth();
   const { season, loading: seasonLoading } = useActiveSeason();
   const { sorted: students, unsorted, loading } = useStudents(seasonLoading ? null : season?.id ?? null);
   const { users: faculty } = useFaculty();
@@ -57,13 +64,15 @@ export function Roster() {
         eyebrow={season ? seasonLabel(season) : 'Faculty'}
         title="House Rosters"
         actions={
-          <Link href="/ceremony" className="btn btn-ghost btn-sm">
-            <NavIcon name="ceremony" size={15} /> Sorting ceremony
-          </Link>
+          !leaderView && (
+            <Link href="/ceremony" className="btn btn-ghost btn-sm">
+              <NavIcon name="ceremony" size={15} /> Sorting ceremony
+            </Link>
+          )
         }
       />
 
-      {unsorted.length > 0 && (
+      {!leaderView && unsorted.length > 0 && (
         <Notice tone="info" className="mb-4">
           {unsorted.length} student{unsorted.length === 1 ? ' hasn’t' : 's haven’t'} been sorted into a house yet.{' '}
           <Link href="/ceremony" className="font-semibold underline underline-offset-2">
@@ -72,7 +81,7 @@ export function Roster() {
         </Notice>
       )}
 
-      <HouseFilter value={houseId} counts={counts} onChange={(id) => setHouseParam(id)} />
+      {!leaderView && <HouseFilter value={houseId} counts={counts} onChange={(id) => setHouseParam(id)} />}
 
       <GoldBorder glow={meta.color} className="overflow-hidden rounded-t-none border-t-0 p-5 sm:p-6" corners={false}>
         <div className="pointer-events-none absolute inset-0" style={{ background: `radial-gradient(ellipse 60% 90% at 85% 100%, ${rgba(meta.color, 0.2)}, transparent 70%)` }} />
@@ -129,7 +138,7 @@ export function Roster() {
         ) : (
           <ul className="lq-card overflow-hidden" style={{ borderColor: rgba(meta.color, 0.3) }}>
             {visible.map((s) => (
-              <StudentRow key={s.id} student={s} rank={members.indexOf(s) + 1} onAssign={role === 'admin' ? setAssigning : undefined} />
+              <StudentRow key={s.id} student={s} rank={members.indexOf(s) + 1} onAssign={role === 'admin' ? setAssigning : undefined} canAward={!leaderView} />
             ))}
           </ul>
         )}

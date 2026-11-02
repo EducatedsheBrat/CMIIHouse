@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useAuth } from '../../hooks/useAuth';
 import { useSearchParam } from '../../hooks/useSearchParam';
 import { useActiveSeason } from '../../hooks/useSeason';
 import { useStudents } from '../../hooks/useStudents';
@@ -24,7 +25,11 @@ type TabKey = (typeof TABS)[number]['key'];
 
 export function AdminPanel() {
   const [tabParam, setTab] = useSearchParam('tab');
-  const tab = (TABS.find((t) => t.key === tabParam)?.key ?? 'stats') as TabKey;
+  const { role } = useAuth();
+  const readOnly = role === 'viewer';
+  // Read-only admins see the numbers and the log, not the controls (Firestore rules enforce this too).
+  const tabs = readOnly ? TABS.filter((t) => t.key === 'stats' || t.key === 'audit') : TABS;
+  const tab = (tabs.find((t) => t.key === tabParam)?.key ?? 'stats') as TabKey;
   const { season, loading } = useActiveSeason();
   const { users: students, unsorted } = useStudents(loading ? null : season?.id ?? null);
 
@@ -33,7 +38,7 @@ export function AdminPanel() {
       <PageHeader eyebrow="Administration" title="The Council Chamber" subtitle={loading ? ' ' : season ? `Active season: ${seasonLabel(season)}` : 'No season is active'} />
 
       {/* Quick links */}
-      <div className="mb-6 grid gap-3 sm:grid-cols-2">
+      <div className={cn('mb-6 grid gap-3', !readOnly && 'sm:grid-cols-2')}>
         <Link href="/admin/students" className="lq-card group flex items-center gap-4 p-4 transition hover:border-gold/60">
           <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-gold/40 bg-royal text-gold-light">
             <NavIcon name="roster" size={24} />
@@ -46,7 +51,7 @@ export function AdminPanel() {
           </span>
           <span className="text-gold/60 transition group-hover:translate-x-1">→</span>
         </Link>
-        <Link href="/ceremony" className="lq-card group relative flex items-center gap-4 overflow-hidden p-4 transition hover:border-gold/60">
+        {!readOnly && <Link href="/ceremony" className="lq-card group relative flex items-center gap-4 overflow-hidden p-4 transition hover:border-gold/60">
           <div className="pointer-events-none absolute -right-6 bottom-0 flex opacity-25 transition group-hover:opacity-40">
             {HOUSE_IDS.map((id) => (
               <Panther key={id} house={id} className="-ml-6 w-24" />
@@ -62,11 +67,11 @@ export function AdminPanel() {
             </span>
           </span>
           <span className="relative text-gold/60 transition group-hover:translate-x-1">→</span>
-        </Link>
+        </Link>}
       </div>
 
       <div className="mb-6 flex gap-1 overflow-x-auto border-b border-gold/20 scroll-thin" role="tablist">
-        {TABS.map((t) => (
+        {tabs.map((t) => (
           <button
             key={t.key}
             type="button"

@@ -43,6 +43,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function homeForRole(role: Role | null | undefined): string {
   switch (role) {
     case 'admin':
+    case 'viewer':
       return '/admin';
     case 'faculty':
       return '/award';

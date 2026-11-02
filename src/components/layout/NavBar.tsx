@@ -18,14 +18,16 @@ interface NavItem {
   icon: NavIconName;
 }
 
-export function navItemsForRole(role: Role | null): NavItem[] {
+export function navItemsForRole(role: Role | null, leader = false): NavItem[] {
   const leaderboard: NavItem = { href: '/leaderboard', label: 'Leaderboard', short: 'Cup', icon: 'leaderboard' };
   const activity: NavItem = { href: '/activity', label: 'Activity', icon: 'activity' };
   switch (role) {
     case 'student':
-      return [leaderboard, { href: '/dashboard', label: 'My House', icon: 'house' }, activity];
+      return [leaderboard, { href: '/dashboard', label: 'My House', icon: 'house' }, ...(leader ? [{ href: '/roster', label: 'House Roster', short: 'Roster', icon: 'roster' as const }] : []), activity];
     case 'faculty':
       return [leaderboard, { href: '/award', label: 'Award', icon: 'award' }, { href: '/roster', label: 'Roster', icon: 'roster' }, activity];
+    case 'viewer':
+      return [leaderboard, { href: '/roster', label: 'Roster', icon: 'roster' }, activity, { href: '/admin', label: 'Admin', icon: 'admin' }];
     case 'admin':
       return [
         leaderboard,
@@ -46,12 +48,13 @@ function useIsActive() {
   return (href: string) => pathname === href || pathname.startsWith(`${href}/`) || (href === '/leaderboard' && pathname === '/');
 }
 
-const ROLE_LABEL: Record<Role, string> = { student: 'Student', faculty: 'Faculty', admin: 'Administrator' };
+const ROLE_LABEL: Record<Role, string> = { student: 'Student', faculty: 'Faculty', admin: 'Administrator', viewer: 'Read-only admin' };
 
 /** Desktop sidebar. */
 export function SideNav() {
   const { role, profile, signOut } = useAuth();
-  const items = navItemsForRole(role);
+  const leader = !!profile?.leader;
+  const items = navItemsForRole(role, leader);
   const isActive = useIsActive();
 
   return (
@@ -101,7 +104,7 @@ export function SideNav() {
             <Avatar name={profile.displayName} houseId={profile.houseId} size={38} />
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-semibold">{profile.displayName}</p>
-              <p className="text-[11px] uppercase tracking-wider text-white/45">{ROLE_LABEL[profile.role]}</p>
+              <p className="text-[11px] uppercase tracking-wider text-white/45">{profile.role === 'student' && profile.leader ? 'House Leader' : ROLE_LABEL[profile.role]}</p>
             </div>
             <button type="button" onClick={signOut} className="rounded-md p-1.5 text-white/40 transition hover:bg-white/5 hover:text-gold-light" title="Sign out" aria-label="Sign out">
               <NavIcon name="signout" size={18} />
@@ -116,8 +119,9 @@ export function SideNav() {
 
 /** Mobile bottom tab bar. */
 export function TabBar() {
-  const { role } = useAuth();
-  const items = navItemsForRole(role);
+  const { role, profile } = useAuth();
+  const leader = !!profile?.leader;
+  const items = navItemsForRole(role, leader);
   const isActive = useIsActive();
   const crowded = items.length > 5;
 

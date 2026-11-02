@@ -40,7 +40,7 @@ function useUserQuery(kind: 'students' | 'faculty', seasonId: string | undefined
   useEffect(() => {
     if (!enabled) return;
     const constraints: QueryConstraint[] =
-      kind === 'faculty' ? [where('role', 'in', ['faculty', 'admin'])] : [where('role', '==', 'student')];
+      kind === 'faculty' ? [where('role', 'in', ['faculty', 'admin', 'viewer'])] : [where('role', '==', 'student')];
     if (kind === 'students' && seasonId) constraints.push(where('seasonId', '==', seasonId));
     const tag = `${kind}:${seasonId ?? '*'}`;
 

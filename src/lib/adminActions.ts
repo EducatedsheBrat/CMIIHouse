@@ -12,6 +12,7 @@ import {
   query,
   serverTimestamp,
   Timestamp,
+  updateDoc,
   where,
   writeBatch,
   type WriteBatch,
@@ -214,6 +215,10 @@ export async function setUserRole(user: AppUser, role: Role) {
   const batch = writeBatch(db);
   batch.update(doc(db, 'users', user.id), { role });
   await batch.commit();
+}
+
+export async function setLeader(user: AppUser, leader: boolean) {
+  await updateDoc(doc(db, 'users', user.id), { leader });
 }
 
 export async function removeUser(user: AppUser) {

@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: 'Admin' };
 
 export default function AdminPage() {
   return (
-    <ProtectedPage allowedRoles={['admin']}>
+    <ProtectedPage allowedRoles={['admin', 'viewer']}>
       <AdminPanel />
     </ProtectedPage>
   );

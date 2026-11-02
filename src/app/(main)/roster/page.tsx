@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: 'House Rosters' };
 
 export default function RosterPage() {
   return (
-    <ProtectedPage allowedRoles={['faculty', 'admin']}>
+    <ProtectedPage allowedRoles={['faculty', 'admin', 'viewer', 'student']}>
       <Roster />
     </ProtectedPage>
   );

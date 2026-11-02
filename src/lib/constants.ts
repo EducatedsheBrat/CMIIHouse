@@ -88,7 +88,7 @@ export const CATEGORIES: Record<CategoryKey, CategoryMeta> = {
   character: { key: 'character', label: 'Character & Leadership', shortLabel: 'Character', min: 25, max: 50, step: 5, color: '#C3CAD9' },
 };
 
-export const ROLES = ['student', 'faculty', 'admin'] as const;
+export const ROLES = ['student', 'faculty', 'admin', 'viewer'] as const;
 export type Role = (typeof ROLES)[number];
 
 export const NOTE_MAX_LENGTH = 280;

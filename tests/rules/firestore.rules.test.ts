@@ -141,6 +141,30 @@ describe('domain restriction', () => {
   });
 });
 
+describe('read-only admin (viewer)', () => {
+  const VIEWER = 'viewer@gsu.edu';
+  beforeEach(async () => {
+    await env.withSecurityRulesDisabled((ctx) =>
+      setDoc(doc(ctx.firestore(), 'users', VIEWER), { email: VIEWER, displayName: 'Viewer', role: 'viewer', houseId: null, seasonId: SEASON, totalPoints: 0 }),
+    );
+  });
+
+  it('can read the roster and points', async () => {
+    await assertSucceeds(getDoc(doc(as(VIEWER), 'users', STUDENT)));
+  });
+
+  it('cannot write anything', async () => {
+    await assertFails(updateDoc(doc(as(VIEWER), 'users', STUDENT), { houseId: 'doron' }));
+    await assertFails(updateDoc(doc(as(VIEWER), 'users', VIEWER), { role: 'admin' }));
+    await assertFails(setDoc(doc(as(VIEWER), 'seasons', 'x'), { status: 'active' }));
+    await assertFails(updateDoc(doc(as(VIEWER), 'houses', 'lumina'), { totalPoints: 999 }));
+  });
+
+  it('an admin can create a viewer', async () => {
+    await assertSucceeds(setDoc(doc(as(ADMIN), 'users', 'new.viewer@gsu.edu'), { email: 'new.viewer@gsu.edu', displayName: 'N', role: 'viewer', houseId: null }));
+  });
+});
+
 describe('users', () => {
   it('students cannot change their own role or points', async () => {
     await assertFails(updateDoc(doc(as(STUDENT), 'users', STUDENT), { role: 'admin' }));

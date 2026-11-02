@@ -8,6 +8,7 @@ import { Avatar } from '../shared/Avatar';
 import { Spinner } from '../shared/States';
 import { useToast } from '../shared/Toast';
 import { AdminSection } from './AdminSection';
+import { InviteMessage } from './InviteMessage';
 
 /** Manual add, one student at a time. The form stays put so you can keep adding. */
 export function StudentAddForm({ activeSeason }: { activeSeason: Season | null }) {
@@ -18,6 +19,8 @@ export function StudentAddForm({ activeSeason }: { activeSeason: Season | null }
   const [busy, setBusy] = useState(false);
   const [added, setAdded] = useState<Array<{ name: string; email: string }>>([]);
 
+  const [invite, setInvite] = useState<{ name: string; email: string } | null>(null);
+
   const valid = name.trim().length > 0 && isGsuEmail(email);
 
   const submit = async (e: FormEvent) => {
@@ -26,7 +29,9 @@ export function StudentAddForm({ activeSeason }: { activeSeason: Season | null }
     setBusy(true);
     try {
       await addStudent(name, email, activeSeason.id);
-      setAdded((a) => [{ name: name.trim(), email: email.trim().toLowerCase() }, ...a].slice(0, 6));
+      const person = { name: name.trim(), email: email.trim().toLowerCase() };
+      setAdded((a) => [person, ...a].slice(0, 6));
+      setInvite(person);
       setName('');
       setEmail('');
       nameInput.current?.focus();
@@ -54,6 +59,8 @@ export function StudentAddForm({ activeSeason }: { activeSeason: Season | null }
           {added.length ? 'Add another' : 'Add student'}
         </button>
       </form>
+
+      {invite && <InviteMessage key={invite.email} name={invite.name} email={invite.email} />}
 
       {added.length > 0 && (
         <div className="mt-4">

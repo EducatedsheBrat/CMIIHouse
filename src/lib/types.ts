@@ -47,6 +47,7 @@ export interface AppUser {
   sortedAt: Timestamp | null;
   seasonId: string;
   totalPoints: number; // denormalized
+  leader?: boolean; // student house leader: badge + view of their own house roster, no extra write powers
   createdAt: Timestamp;
   photoURL?: string;
   lastLoginAt?: Timestamp;

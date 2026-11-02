@@ -12,6 +12,9 @@ import { ConfirmDialog } from '../shared/ConfirmDialog';
 import { EmptyState, Notice, SkeletonRows, Spinner } from '../shared/States';
 import { useToast } from '../shared/Toast';
 import { AdminSection } from './AdminSection';
+import { InviteMessage } from './InviteMessage';
+
+const ROLE_NOUN: Record<Role, string> = { student: 'a student', faculty: 'faculty', admin: 'an admin', viewer: 'a read-only admin' };
 
 export function FacultyManager({ activeSeason }: { activeSeason: Season | null }) {
   const { profile } = useAuth();
@@ -19,6 +22,7 @@ export function FacultyManager({ activeSeason }: { activeSeason: Season | null }
   const { users: faculty, loading } = useFaculty();
   const [form, setForm] = useState({ name: '', email: '', role: 'faculty' as Role, house: '' as HouseId | '' });
   const [adding, setAdding] = useState(false);
+  const [invite, setInvite] = useState<{ name: string; email: string } | null>(null);
   const [removing, setRemoving] = useState<AppUser | null>(null);
   const [savingId, setSavingId] = useState<string | null>(null);
 
@@ -30,7 +34,8 @@ export function FacultyManager({ activeSeason }: { activeSeason: Season | null }
         { email: form.email, displayName: form.name, role: form.role, houseId: isHouseId(form.house) ? form.house : null },
         activeSeason?.id ?? '',
       );
-      toast(`${form.name} was added as ${form.role === 'admin' ? 'an admin' : 'faculty'}.`, 'success');
+      toast(`${form.name} was added as ${ROLE_NOUN[form.role]}.`, 'success');
+      setInvite({ name: form.name, email: form.email.trim().toLowerCase() });
       setForm({ name: '', email: '', role: 'faculty', house: '' });
     } catch (err) {
       toast((err as Error).message, 'error');
@@ -68,6 +73,7 @@ export function FacultyManager({ activeSeason }: { activeSeason: Season | null }
             <select id="fac-role" className="input" value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value as Role })}>
               <option value="faculty">Faculty</option>
               <option value="admin">Admin</option>
+              <option value="viewer">Read-only admin</option>
             </select>
           </div>
           <div>
@@ -86,7 +92,8 @@ export function FacultyManager({ activeSeason }: { activeSeason: Season | null }
             Add
           </button>
         </form>
-        {form.email && !isGsuEmail(form.email) && <Notice tone="error" className="mt-3">Faculty must use a GSU email to sign in.</Notice>}
+        {form.email && !isGsuEmail(form.email) && <Notice tone="error" className="mt-3">Everyone must use a GSU email to sign in.</Notice>}
+        {invite && <InviteMessage key={invite.email} name={invite.name} email={invite.email} />}
       </AdminSection>
 
       <AdminSection title={`Faculty & admins (${faculty.length})`}>
@@ -113,11 +120,12 @@ export function FacultyManager({ activeSeason }: { activeSeason: Season | null }
                       value={f.role}
                       disabled={isMe || savingId === f.id}
                       title={isMe ? 'You can’t change your own role' : undefined}
-                      onChange={(e) => save(f, () => setUserRole(f, e.target.value as Role), `${f.displayName} is now ${e.target.value}.`)}
+                      onChange={(e) => save(f, () => setUserRole(f, e.target.value as Role), `${f.displayName} is now ${ROLE_NOUN[e.target.value as Role]}.`)}
                       aria-label="Role"
                     >
                       <option value="faculty">Faculty</option>
                       <option value="admin">Admin</option>
+                      <option value="viewer">Read-only admin</option>
                     </select>
                     <select
                       className="input w-auto flex-1 py-1.5 text-sm sm:flex-none"

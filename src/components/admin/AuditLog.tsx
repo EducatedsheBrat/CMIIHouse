@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { useAuth } from '../../hooks/useAuth';
 import { revokePoint, usePointFeed } from '../../hooks/usePoints';
 import { useSeasons } from '../../hooks/useSeason';
 import { CATEGORIES, CATEGORY_KEYS, HOUSES, isCategoryKey, type CategoryKey, type HouseId } from '../../lib/constants';
@@ -16,6 +17,7 @@ import { AdminSection } from './AdminSection';
 
 export function AuditLog({ activeSeason }: { activeSeason: Season | null }) {
   const toast = useToast();
+  const { role } = useAuth();
   const { seasons } = useSeasons();
   const [pickedSeasonId, setSeasonId] = useState<string>('');
   const [house, setHouse] = useState<HouseId | null>(null);
@@ -145,9 +147,11 @@ export function AuditLog({ activeSeason }: { activeSeason: Season | null }) {
                     <p className="text-white/40">{p.awardedBy}</p>
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <button type="button" onClick={() => setRevoking(p)} className="font-heading text-[10px] font-bold uppercase tracking-[0.14em] text-red-300/70 hover:text-red-300">
-                      Revoke
-                    </button>
+                    {role === 'admin' && (
+                      <button type="button" onClick={() => setRevoking(p)} className="font-heading text-[10px] font-bold uppercase tracking-[0.14em] text-red-300/70 hover:text-red-300">
+                        Revoke
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}

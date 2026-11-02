@@ -2,9 +2,10 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useAuth } from '../../hooks/useAuth';
 import { useActiveSeason } from '../../hooks/useSeason';
 import { useStudents } from '../../hooks/useStudents';
-import { removeUser } from '../../lib/adminActions';
+import { removeUser, setLeader } from '../../lib/adminActions';
 import { HOUSES, HOUSE_IDS, type HouseId } from '../../lib/constants';
 import { countMembers } from '../../lib/sorting';
 import type { AppUser } from '../../lib/types';
@@ -14,6 +15,7 @@ import { AssignHouseDialog } from '../shared/AssignHouseDialog';
 import { Avatar } from '../shared/Avatar';
 import { ConfirmDialog } from '../shared/ConfirmDialog';
 import { HouseBadge } from '../shared/HouseBadge';
+import { LeaderBadge } from '../shared/LeaderBadge';
 import { PageHeader } from '../shared/PageHeader';
 import { EmptyState, Notice, SkeletonRows } from '../shared/States';
 import { useToast } from '../shared/Toast';
@@ -25,6 +27,7 @@ type Filter = 'all' | 'unsorted' | HouseId;
 
 export function StudentsPage() {
   const toast = useToast();
+  const canEdit = useAuth().role === 'admin';
   const { season } = useActiveSeason();
   const { users: students, sorted, unsorted, loading } = useStudents();
   const existingIds = useMemo(() => new Set(students.map((s) => s.id)), [students]);
@@ -59,9 +62,11 @@ export function StudentsPage() {
         title="Students"
         subtitle="Add students to the rolls. They stay unsorted until the sorting ceremony."
         actions={
-          <Link href="/ceremony" className="btn btn-gold btn-sm">
-            <NavIcon name="ceremony" size={16} /> Sorting ceremony
-          </Link>
+          canEdit && (
+            <Link href="/ceremony" className="btn btn-gold btn-sm">
+              <NavIcon name="ceremony" size={16} /> Sorting ceremony
+            </Link>
+          )
         }
       />
 
@@ -76,10 +81,12 @@ export function StudentsPage() {
         </Notice>
       )}
 
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:items-start">
-        <StudentImport activeSeason={season} existingIds={existingIds} />
-        <StudentAddForm activeSeason={season} />
-      </div>
+      {canEdit && (
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:items-start">
+          <StudentImport activeSeason={season} existingIds={existingIds} />
+          <StudentAddForm activeSeason={season} />
+        </div>
+      )}
 
       <div className="mt-5">
         <AdminSection
@@ -113,7 +120,9 @@ export function StudentsPage() {
                 <li key={s.id} className="flex flex-wrap items-center gap-3 px-3 py-2.5 sm:flex-nowrap">
                   <Avatar name={s.displayName} houseId={s.houseId} size={34} />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold">{s.displayName}</p>
+                    <p className="truncate text-sm font-semibold">
+                      {s.displayName} {s.leader && <LeaderBadge />}
+                    </p>
                     <p className="truncate text-xs text-white/40">
                       {s.email}
                       {season && s.seasonId !== season.id && <span className="text-gold/70"> · {s.seasonId || 'no season'}</span>}
@@ -121,7 +130,15 @@ export function StudentsPage() {
                   </div>
                   {s.sorted ? <HouseBadge houseId={s.houseId} size="xs" /> : <span className="chip border-gold/40 text-[10px] font-heading uppercase tracking-wider text-gold/80">Unsorted</span>}
                   <span className="scoreboard w-12 text-right text-sm">{formatPoints(s.totalPoints)}</span>
-                  <div className="flex items-center gap-1">
+                  {canEdit && <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => setLeader(s, !s.leader).then(() => toast(`${s.displayName} is ${s.leader ? 'no longer' : 'now'} a house leader.`, 'success'), (err) => toast((err as Error).message, 'error'))}
+                      className="btn btn-ghost btn-sm"
+                      title={s.leader ? 'Remove house leader badge' : 'Make a house leader'}
+                    >
+                      {s.leader ? 'Unlead' : 'Lead'}
+                    </button>
                     <button type="button" onClick={() => setAssigning(s)} className="btn btn-ghost btn-sm" title="Assign a house directly">
                       {s.sorted ? 'Move' : 'Assign'}
                     </button>
@@ -135,7 +152,7 @@ export function StudentsPage() {
                     >
                       ✕
                     </button>
-                  </div>
+                  </div>}
                 </li>
               ))}
             </ul>

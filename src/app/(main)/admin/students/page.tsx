@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: 'Students' };
 
 export default function AdminStudentsPage() {
   return (
-    <ProtectedPage allowedRoles={['admin']}>
+    <ProtectedPage allowedRoles={['admin', 'viewer']}>
       <StudentsPage />
     </ProtectedPage>
   );
