@@ -124,10 +124,15 @@ describe('domain restriction', () => {
     await assertSucceeds(getDoc(doc(as(STUDENT), 'users', OTHER_STUDENT)));
   });
 
-  it('a non-GSU account cannot read the roster, even with a provisioned-looking doc', async () => {
-    await env.withSecurityRulesDisabled((ctx) => setDoc(doc(ctx.firestore(), 'users', 'someone@gmail.com'), { role: 'admin', email: 'someone@gmail.com' }));
-    await assertFails(getDoc(doc(as('someone@gmail.com'), 'users', STUDENT)));
-    await assertFails(setDoc(doc(as('someone@gmail.com'), 'seasons', 'x'), { status: 'active' }));
+  it('a Gmail account NOT on the roster can only check its own doc', async () => {
+    await assertSucceeds(getDoc(doc(as('stranger@gmail.com'), 'users', 'stranger@gmail.com')));
+    await assertFails(getDoc(doc(as('stranger@gmail.com'), 'users', STUDENT)));
+    await assertFails(setDoc(doc(as('stranger@gmail.com'), 'seasons', 'x'), { status: 'active' }));
+  });
+
+  it('a Gmail account an admin has added can read the roster', async () => {
+    await env.withSecurityRulesDisabled((ctx) => setDoc(doc(ctx.firestore(), 'users', 'invited@gmail.com'), { role: 'student', email: 'invited@gmail.com' }));
+    await assertSucceeds(getDoc(doc(as('invited@gmail.com'), 'users', STUDENT)));
   });
 
   it('an unverified email cannot impersonate an admin', async () => {

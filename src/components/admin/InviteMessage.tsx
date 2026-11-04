@@ -11,12 +11,12 @@ export function inviteText(name: string, kind: 'student' | 'staff' = 'staff', se
   if (kind === 'student') {
     return {
       subject: 'You’re on the CMII Den Points rolls',
-      body: `Hi ${first},\n\nYou’ve been added to CMII Den Points, the house points system for the Creative Media Industries Institute.\n\nTo sign in:\n\n1. Go to ${url}\n2. Click “Sign in with your GSU account”\n3. Choose your GSU email (the one this message was sent to). Personal Gmail accounts won’t work.\n\nYou’ll start out unsorted. At the sorting ceremony you’ll be placed in one of four houses: Lumina, Doron, Asé or Kaizen. After that, you’ll earn points for your house and can see the leaderboard and your own progress.\n\nIf you see a “not on the house rolls” message, reply to this email and I’ll check that your address matches.\n\n${sender}\n`,
+      body: `Hi ${first},\n\nYou’ve been added to CMII Den Points, the house points system for the Creative Media Industries Institute.\n\nTo sign in:\n\n1. Go to ${url}\n2. Click “Sign in with Google”\n3. Choose the email this message was sent to (GSU or Gmail).\n\nYou’ll start out unsorted. At the sorting ceremony you’ll be placed in one of four houses: Lumina, Doron, Asé or Kaizen. After that, you’ll earn points for your house and can see the leaderboard and your own progress.\n\nIf you see a “not on the house rolls” message, reply to this email and I’ll check that your address matches.\n\n${sender}\n`,
     };
   }
   return {
     subject: 'You’re on the CMII Den Points rolls',
-    body: `Hi ${first},\n\nYou’ve been added to CMII Den Points. Go to ${url}, click “Sign in with your GSU account”, and choose your GSU email (the one I added you with).\n\nIf Google offers more than one account, pick the GSU one.\n`,
+    body: `Hi ${first},\n\nYou’ve been added to CMII Den Points. Go to ${url}, click “Sign in with Google”, and choose the email I added you with.\n\nIf Google offers more than one account, pick that one.\n`,
   };
 }
 

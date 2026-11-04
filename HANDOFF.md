@@ -13,7 +13,7 @@ For the faculty admins who run it. No coding needed for anything below.
 | **Read-only admin** | View the admin panel, stats, audit log and rosters. Changes nothing |
 | **Student** | See their house, points, leaderboard. **House Leader** students (flag set in *Admin → Students → Lead*) also see their own house's roster |
 
-Everyone signs in with **Google using their GSU email**. Adding someone only puts them on the list. The app sends no email.
+Everyone signs in with **Google**, using **either a GSU or a Gmail address**, but only if an admin has added that exact address to the list first. Adding someone only puts them on the list. The app sends no email.
 
 ## Everyday tasks
 
@@ -45,6 +45,6 @@ The app keeps running without any change, but **if the owner's account is remove
 
 ## If something looks wrong
 
-- **Someone can't sign in:** they must use the same GSU email you added, and Google must be on that account. Check they're on the list.
+- **Someone can't sign in:** they must use the same email you added (GSU or Gmail), and Google must be on that account. Check they're on the list.
 - **"Not on the rolls" message:** the email doesn't match a person on the list (check spelling, `student.gsu.edu` vs `gsu.edu`).
 - **Points look off:** *Admin → Seasons → Recalculate totals*.

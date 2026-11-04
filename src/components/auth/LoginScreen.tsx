@@ -71,7 +71,7 @@ export function LoginScreen() {
           <div className="parchment p-4 text-center">
             <p className="font-heading text-sm font-bold">Not yet on the house rolls</p>
             <p className="mt-1.5 text-xs leading-relaxed text-parchment-ink/75">
-              <strong className="break-all">{firebaseUser?.email ?? 'This account'}</strong> hasn’t been added to Den Points. Sign in with your GSU account, or ask a CMII admin to add you.
+              <strong className="break-all">{firebaseUser?.email ?? 'This account'}</strong> hasn’t been added to Den Points. Sign in with the email your invite was sent to, or ask a CMII admin to add you.
             </p>
             <button type="button" onClick={signOut} className="mt-3 font-heading text-xs font-bold uppercase tracking-[0.14em] text-parchment-ink underline-offset-4 hover:underline">
               Use a different account
@@ -86,9 +86,9 @@ export function LoginScreen() {
               className="flex w-full items-center justify-center gap-3 rounded-lg border border-gold/50 bg-white px-4 py-3 text-[15px] font-semibold text-[#1f1f1f] transition hover:bg-parchment disabled:opacity-60"
             >
               {busy === 'gsu' && <Spinner size={18} className="border-black/20 border-t-black/70" />}
-              Sign in with your GSU account
+              Sign in with Google
             </button>
-            <p className="mt-2 text-center text-[11px] text-white/40">Use your @gsu.edu or @student.gsu.edu email</p>
+            <p className="mt-2 text-center text-[11px] text-white/40">Use the email your invite was sent to (GSU or Gmail)</p>
           </>
         )}
 

@@ -19,12 +19,12 @@ service cloud.firestore {
       return request.auth.token.email.lower();
     }
 
-    // Server-side domain restriction: verified @gsu.edu (or subdomain, e.g. student.gsu.edu).
+    // Any verified email (GSU or Gmail) may sign in. The gate is the roster:
+    // an account can do nothing unless an admin has added a users/{email} doc for it.
     function isVerifiedGsu() {
       return signedIn()
         && 'email' in request.auth.token
-        && request.auth.token.email_verified == true
-        && emailKey().matches('^[^@]+@([a-z0-9-]+[.])*gsu[.]edu$');
+        && request.auth.token.email_verified == true;
     }
 
     function mePath() {
